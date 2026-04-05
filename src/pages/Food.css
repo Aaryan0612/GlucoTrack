@@ -60,6 +60,56 @@
   gap: var(--space-4);
 }
 
+.plan-section {
+  margin-top: var(--space-6);
+}
+
+.plan-title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  color: var(--color-text-primary);
+  margin-top: 6px;
+}
+
+.plan-grid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.plan-card {
+  background: var(--color-surface);
+  border-radius: 24px;
+  padding: var(--space-5);
+  box-shadow: var(--shadow-card);
+}
+
+.plan-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  align-items: center;
+  margin-bottom: var(--space-3);
+}
+
+.formatted-plan {
+  display: grid;
+  gap: 8px;
+}
+
+.formatted-plan p {
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  padding-left: 18px;
+  position: relative;
+}
+
+.formatted-plan p::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+}
+
 .meal-card {
   width: 100%;
   text-align: left;
@@ -223,6 +273,16 @@
 
 .food-notes {
   min-height: 92px;
+  border: none;
+  border-radius: 18px;
+  background: var(--color-surface-alt);
+  padding: 14px 16px;
+  color: var(--color-text-primary);
+  resize: vertical;
+}
+
+.food-plan-editor {
+  min-height: 180px;
   border: none;
   border-radius: 18px;
   background: var(--color-surface-alt);

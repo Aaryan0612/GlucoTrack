@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronDown, ChevronUp, Flame, Minus, Plus } from 'lucide-react';
+import { Bell, ChevronDown, ChevronUp, FilePenLine, Flame, Minus, Plus } from 'lucide-react';
 import BottomSheet from '../components/shared/BottomSheet';
 import { useApp } from '../context/AppContext';
 import { getGoalStreak } from '../utils/aggregations';
 import { addDays, getMonthGrid, isSameMonth, toDateKey } from '../utils/dateHelpers';
-import { saveGoalsForDate, toggleGoal, updateGoalTarget, updateSettings } from '../utils/storage';
+import { saveGoalsForDate, toggleGoal, updateCarePlan, updateGoalTarget, updateSettings } from '../utils/storage';
 import './Goals.css';
 
 const GOAL_META = {
@@ -32,11 +32,13 @@ const GOAL_META = {
 };
 
 function Goals() {
-  const { goalsLog, goalTargets, settings, refreshGoalsLog, refreshGoalTargets, refreshSettings, showToast } = useApp();
+  const { carePlans, goalsLog, goalTargets, settings, refreshCarePlans, refreshGoalsLog, refreshGoalTargets, refreshSettings, showToast } = useApp();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const [yesterdaySheetOpen, setYesterdaySheetOpen] = useState(false);
+  const [editingExercisePlan, setEditingExercisePlan] = useState(null);
+  const [exercisePlanDraft, setExercisePlanDraft] = useState('');
   const todayKey = toDateKey();
   const yesterdayKey = toDateKey(addDays(new Date(), -1));
   const todayGoals = goalsLog.find((entry) => entry.date === todayKey);
@@ -115,6 +117,41 @@ function Goals() {
     updateSettings({ lastGoalsNudgeHandledDate: yesterdayKey });
     refreshSettings();
     setYesterdaySheetOpen(false);
+  };
+
+  const handleOpenExercisePlan = (key) => {
+    setEditingExercisePlan(key);
+    setExercisePlanDraft(carePlans?.exercisePlans?.[key] || '');
+  };
+
+  const handleSaveExercisePlan = () => {
+    if (!editingExercisePlan) return;
+    updateCarePlan('exercisePlans', editingExercisePlan, exercisePlanDraft.trim());
+    refreshCarePlans();
+    showToast('Exercise plan updated ✓');
+    setEditingExercisePlan(null);
+  };
+
+  const handleReminderToggle = () => {
+    updateSettings({ reminderEnabled: !settings?.reminderEnabled });
+    refreshSettings();
+  };
+
+  const handleReminderTime = (value) => {
+    updateSettings({ reminderTime: value, lastReminderSentDate: null });
+    refreshSettings();
+  };
+
+  const requestNotifications = async () => {
+    if (!('Notification' in window)) {
+      showToast('Notifications are not supported on this device', 'error');
+      return;
+    }
+    const permission = await Notification.requestPermission();
+    showToast(
+      permission === 'granted' ? 'Device reminders allowed ✓' : 'Notification permission was not granted',
+      permission === 'granted' ? 'success' : 'error'
+    );
   };
 
   return (
@@ -248,6 +285,71 @@ function Goals() {
         ))}
       </section>
 
+      <section className="care-card">
+        <div className="section-title-row">
+          <div>
+            <p className="section-eyebrow">Daily support plans</p>
+            <h2>Gentle exercises for mom</h2>
+          </div>
+        </div>
+        <div className="care-plan-grid">
+          {[
+            ['kneePain', 'Knee pain'],
+            ['backPain', 'Back pain'],
+            ['stress', 'Stress care'],
+          ].map(([key, label]) => (
+            <article key={key} className="care-plan-card">
+              <div className="plan-card-top">
+                <strong>{label}</strong>
+                <button className="inline-link" onClick={() => handleOpenExercisePlan(key)}>
+                  <FilePenLine size={16} /> Edit
+                </button>
+              </div>
+              <div className="formatted-plan">
+                {(carePlans?.exercisePlans?.[key] || '')
+                  .split('\n')
+                  .filter(Boolean)
+                  .map((line) => (
+                    <p key={line}>{line}</p>
+                  ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="care-card reminder-card">
+        <div className="plan-card-top">
+          <div>
+            <p className="section-eyebrow">Reminder settings</p>
+            <h2>Daily exercise reminder</h2>
+          </div>
+          <Bell size={18} />
+        </div>
+        <div className="reminder-controls">
+          <label className="toggle-row">
+            <span>Enable daily reminder</span>
+            <button className={`toggle-pill ${settings?.reminderEnabled ? 'on' : ''}`} onClick={handleReminderToggle}>
+              <i />
+            </button>
+          </label>
+          <label className="reminder-time-row">
+            <span>Reminder time</span>
+            <input
+              type="time"
+              value={settings?.reminderTime || '09:00'}
+              onChange={(event) => handleReminderTime(event.target.value)}
+            />
+          </label>
+          <button className="mini-primary left-align" onClick={requestNotifications}>
+            Allow device reminders
+          </button>
+          <p className="sheet-helper">
+            The app can send a reminder when it is open or reopened around the chosen time.
+          </p>
+        </div>
+      </section>
+
       <BottomSheet
         open={Boolean(selectedDay)}
         onClose={() => setSelectedDay(null)}
@@ -288,6 +390,23 @@ function Goals() {
         </button>
         <button className="mini-secondary full-width" onClick={handleDismissYesterdayNudge}>
           Skip for now
+        </button>
+      </BottomSheet>
+
+      <BottomSheet
+        open={Boolean(editingExercisePlan)}
+        onClose={() => setEditingExercisePlan(null)}
+        title="Edit exercise plan"
+      >
+        <p className="sheet-helper">Write simple steps. Each new line becomes one clear point for mom.</p>
+        <textarea
+          className="food-plan-editor"
+          value={exercisePlanDraft}
+          onChange={(event) => setExercisePlanDraft(event.target.value)}
+          placeholder="Add gentle daily exercises here..."
+        />
+        <button className="btn-primary" onClick={handleSaveExercisePlan}>
+          Save exercise plan
         </button>
       </BottomSheet>
     </div>

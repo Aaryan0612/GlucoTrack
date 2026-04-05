@@ -236,6 +236,37 @@
   background: linear-gradient(180deg, var(--color-primary-pale), var(--color-surface));
 }
 
+.encouragement-card {
+  padding: var(--space-4);
+  border-radius: 22px;
+}
+
+.encouragement-supportive {
+  background: linear-gradient(135deg, rgba(255, 240, 236, 0.92), rgba(255, 255, 255, 0.96));
+}
+
+.encouragement-progress {
+  background: linear-gradient(135deg, rgba(216, 243, 220, 0.9), rgba(255, 255, 255, 0.96));
+}
+
+.encouragement-steady {
+  background: linear-gradient(135deg, rgba(242, 237, 230, 0.92), rgba(255, 255, 255, 0.96));
+}
+
+.encouragement-kicker {
+  display: inline-block;
+  color: var(--color-primary);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-2);
+}
+
+.encouragement-card h2 {
+  margin-bottom: 8px;
+}
+
 .insulin-copy {
   display: flex;
   gap: var(--space-3);

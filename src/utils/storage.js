@@ -4,6 +4,7 @@ const KEYS = {
   foodLog: 'glucotrack_food_log',
   goalsLog: 'glucotrack_goals_log',
   goalTargets: 'glucotrack_goal_targets',
+  carePlans: 'glucotrack_care_plans',
   settings: 'glucotrack_settings',
 };
 
@@ -16,12 +17,27 @@ const DEFAULT_SETTINGS = {
   installPromptDismissed: false,
   pastReadingsHintDismissed: false,
   lastGoalsNudgeHandledDate: null,
+  lastReminderSentDate: null,
 };
 
 const DEFAULT_GOAL_TARGETS = {
   walk: { targetMins: 20 },
   meditation: { targetMins: 10 },
   exercise: { targetMins: 15 },
+};
+
+const DEFAULT_CARE_PLANS = {
+  mealPlans: {
+    breakfast: 'Warm oats with milk\n1 fruit on the side\nTea without extra sugar if possible',
+    lunch: 'Roti or rice in a balanced portion\nDal or protein\nOne cooked vegetable and salad',
+    snacks: 'Choose one light snack\nNuts, makhana, sprouts, or fruit',
+    dinner: 'Keep dinner light and on time\nDal, sabzi, soup, or khichdi work well',
+  },
+  exercisePlans: {
+    kneePain: 'Supported chair sit-to-stand x 8\nGentle leg raises\nAnkle rotations',
+    backPain: 'Wall-supported stretch\nCat-cow on the bed or chair variation\nGentle shoulder rolls',
+    stress: '5 minutes deep breathing\nShort guided meditation\nSlow evening walk if comfortable',
+  },
 };
 
 export const QUICK_ADD_ITEMS = {
@@ -211,6 +227,29 @@ export function updateGoalTarget(goalKey, targetMins) {
   saveData(KEYS.goalTargets, targets);
 }
 
+// Care plans
+export function getCarePlans() {
+  return {
+    ...DEFAULT_CARE_PLANS,
+    ...(loadData(KEYS.carePlans) || {}),
+    mealPlans: {
+      ...DEFAULT_CARE_PLANS.mealPlans,
+      ...((loadData(KEYS.carePlans) || {}).mealPlans || {}),
+    },
+    exercisePlans: {
+      ...DEFAULT_CARE_PLANS.exercisePlans,
+      ...((loadData(KEYS.carePlans) || {}).exercisePlans || {}),
+    },
+  };
+}
+
+export function updateCarePlan(section, key, value) {
+  const plans = getCarePlans();
+  plans[section][key] = value;
+  saveData(KEYS.carePlans, plans);
+  return plans;
+}
+
 // Insulin
 export function getAllInsulinRecords() {
   return loadData(KEYS.insulinLog) || [];
@@ -259,4 +298,4 @@ export function updateSettings(partialSettings) {
   return nextSettings;
 }
 
-export { DEFAULT_GOAL_TARGETS, DEFAULT_SETTINGS, KEYS };
+export { DEFAULT_CARE_PLANS, DEFAULT_GOAL_TARGETS, DEFAULT_SETTINGS, KEYS };

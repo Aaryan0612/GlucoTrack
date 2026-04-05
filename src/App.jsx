@@ -8,7 +8,9 @@ import LogReading from './pages/LogReading';
 import Progress from './pages/Progress';
 import Onboarding from './pages/Onboarding';
 import BottomNav from './components/layout/BottomNav';
+import DailyReminderManager from './components/layout/DailyReminderManager';
 import InstallPrompt from './components/layout/InstallPrompt';
+import OpeningQuote from './components/layout/OpeningQuote';
 import Toast from './components/shared/Toast';
 
 function App() {
@@ -16,6 +18,8 @@ function App() {
     <ThemeProvider>
       <AppProvider>
         <BrowserRouter>
+          <DailyReminderManager />
+          <OpeningQuote />
           <InstallPrompt />
           <Routes>
             <Route path="/onboarding" element={<Onboarding />} />

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Apple, Clock3, Plus, Search, Trash2 } from 'lucide-react';
+import { Apple, Clock3, FilePenLine, Plus, Search, Trash2 } from 'lucide-react';
 import BottomSheet from '../components/shared/BottomSheet';
 import ConfirmSheet from '../components/shared/ConfirmSheet';
 import { useApp } from '../context/AppContext';
@@ -8,6 +8,7 @@ import {
   QUICK_ADD_ITEMS,
   deleteMealEntry,
   saveMealEntry,
+  updateCarePlan,
 } from '../utils/storage';
 import {
   addDays,
@@ -30,7 +31,7 @@ const MEAL_META = {
 
 function Food() {
   const location = useLocation();
-  const { foodLog, refreshFoodLog, showToast } = useApp();
+  const { carePlans, foodLog, refreshCarePlans, refreshFoodLog, showToast } = useApp();
   const [selectedDate, setSelectedDate] = useState(toDateKey());
   const [activeMeal, setActiveMeal] = useState(location.state?.mealType || null);
   const [search, setSearch] = useState('');
@@ -38,6 +39,8 @@ function Food() {
   const [draftNotes, setDraftNotes] = useState('');
   const [draftTime, setDraftTime] = useState(toInputTimeValue(new Date()));
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [editingPlan, setEditingPlan] = useState(null);
+  const [planDraft, setPlanDraft] = useState('');
 
   const dateMeals = useMemo(
     () => foodLog.filter((entry) => entry.date === selectedDate),
@@ -96,6 +99,19 @@ function Food() {
     showToast('Meal removed');
     setConfirmDeleteOpen(false);
     setActiveMeal(null);
+  };
+
+  const handleOpenPlanEditor = (mealType) => {
+    setEditingPlan(mealType);
+    setPlanDraft(carePlans?.mealPlans?.[mealType] || '');
+  };
+
+  const handleSavePlan = () => {
+    if (!editingPlan) return;
+    updateCarePlan('mealPlans', editingPlan, planDraft.trim());
+    refreshCarePlans();
+    showToast('Meal plan updated ✓');
+    setEditingPlan(null);
   };
 
   return (
@@ -166,6 +182,35 @@ function Food() {
             </button>
           );
         })}
+      </section>
+
+      <section className="plan-section">
+        <div className="section-title-row">
+          <div>
+            <p className="section-eyebrow">Healthy meal plans</p>
+            <h2 className="plan-title">Gentle guidance for each meal</h2>
+          </div>
+        </div>
+        <div className="plan-grid">
+          {Object.entries(MEAL_META).map(([mealType, meta]) => (
+            <article key={mealType} className="plan-card">
+              <div className="plan-card-top">
+                <strong>{meta.icon} {meta.label}</strong>
+                <button className="inline-link" onClick={() => handleOpenPlanEditor(mealType)}>
+                  <FilePenLine size={16} /> Edit
+                </button>
+              </div>
+              <div className="formatted-plan">
+                {(carePlans?.mealPlans?.[mealType] || '')
+                  .split('\n')
+                  .filter(Boolean)
+                  .map((line) => (
+                    <p key={line}>{line}</p>
+                  ))}
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
 
       <BottomSheet
@@ -264,6 +309,22 @@ function Food() {
         description="This will remove the meal for that day. You can always add it again later."
         confirmLabel="Remove meal"
       />
+      <BottomSheet
+        open={Boolean(editingPlan)}
+        onClose={() => setEditingPlan(null)}
+        title={editingPlan ? `Edit ${MEAL_META[editingPlan].label} plan` : ''}
+      >
+        <p className="sheet-helper">Write in plain text. Each new line becomes a neat point for mom.</p>
+        <textarea
+          className="food-plan-editor"
+          value={planDraft}
+          onChange={(event) => setPlanDraft(event.target.value)}
+          placeholder="Add simple meal guidance here..."
+        />
+        <button className="btn-primary" onClick={handleSavePlan}>
+          Save meal plan
+        </button>
+      </BottomSheet>
     </div>
   );
 }

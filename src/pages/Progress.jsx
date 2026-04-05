@@ -6,6 +6,7 @@ import {
   Legend,
   Line,
   LineChart,
+  ReferenceArea,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -13,6 +14,8 @@ import {
 } from 'recharts';
 import { useMemo, useState } from 'react';
 import { Syringe } from 'lucide-react';
+import BottomSheet from '../components/shared/BottomSheet';
+import ConfirmSheet from '../components/shared/ConfirmSheet';
 import { useApp } from '../context/AppContext';
 import {
   buildDailyAverageData,
@@ -25,7 +28,7 @@ import {
   getReadingsInRange,
 } from '../utils/aggregations';
 import { formatDate, formatTime, getMostRecentSaturday, startOfDay } from '../utils/dateHelpers';
-import { addInsulinRecord } from '../utils/storage';
+import { addInsulinRecord, deleteReading } from '../utils/storage';
 import './Progress.css';
 
 const RANGE_MAP = {
@@ -43,8 +46,10 @@ const STATUS_COLORS = {
 };
 
 function Progress() {
-  const { readings, foodLog, goalsLog, insulinLog, refreshInsulinLog, showToast } = useApp();
+  const { readings, foodLog, goalsLog, insulinLog, refreshInsulinLog, refreshReadings, showToast } = useApp();
   const [timeRange, setTimeRange] = useState('7');
+  const [selectedReading, setSelectedReading] = useState(null);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const days = RANGE_MAP[timeRange];
 
   const startDate = startOfDay(new Date(Date.now() - (days - 1) * 24 * 60 * 60 * 1000));
@@ -72,6 +77,28 @@ function Progress() {
     });
     refreshInsulinLog();
     showToast('Insulin logged 💉');
+  };
+
+  const handleDeleteReading = () => {
+    if (!selectedReading) return;
+    deleteReading(selectedReading.id);
+    setConfirmDeleteOpen(false);
+    setSelectedReading(null);
+    refreshReadings();
+    showToast('Reading deleted');
+  };
+
+  const CustomLineTooltip = ({ active, payload, label }) => {
+    if (!active || !payload?.length) return null;
+    const fasting = payload.find((entry) => entry.dataKey === 'fasting')?.value;
+    const postMeal = payload.find((entry) => entry.dataKey === 'postMeal')?.value;
+    return (
+      <div className="chart-tooltip">
+        <strong>{label}</strong>
+        {typeof fasting === 'number' && <p>Fasting: {fasting} mg/dL</p>}
+        {typeof postMeal === 'number' && <p>Post-meal: {postMeal} mg/dL</p>}
+      </div>
+    );
   };
 
   return (
@@ -123,10 +150,13 @@ function Progress() {
         </div>
         <ResponsiveContainer width="100%" height={240}>
           <LineChart data={lineData} margin={{ top: 8, right: 8, left: -20, bottom: 8 }}>
+            <ReferenceArea y1={70} y2={139} fill="rgba(82, 183, 136, 0.10)" />
+            <ReferenceArea y1={140} y2={199} fill="rgba(244, 162, 97, 0.10)" />
+            <ReferenceArea y1={200} y2={280} fill="rgba(230, 57, 70, 0.08)" />
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(92,92,92,0.12)" />
             <XAxis dataKey="date" tickLine={false} axisLine={false} />
             <YAxis tickLine={false} axisLine={false} width={36} />
-            <Tooltip />
+            <Tooltip content={<CustomLineTooltip />} />
             <Legend />
             <Line type="monotone" dataKey="fasting" stroke="var(--color-primary)" strokeWidth={3} dot={{ r: 3 }} connectNulls={false} />
             <Line type="monotone" dataKey="postMeal" name="post-meal" stroke="var(--color-accent)" strokeWidth={3} strokeDasharray="5 5" dot={{ r: 3 }} connectNulls={false} />
@@ -254,11 +284,40 @@ function Progress() {
                     <small>{formatTime(reading.loggedAt)}</small>
                     {reading.notes && <small>{reading.notes}</small>}
                   </div>
+                  <button className="inline-link history-link" onClick={() => setSelectedReading(reading)}>
+                    View
+                  </button>
                 </div>
               ))}
           </div>
         )}
       </div>
+      <BottomSheet
+        open={Boolean(selectedReading)}
+        onClose={() => setSelectedReading(null)}
+        title={selectedReading ? `${selectedReading.value} mg/dL` : ''}
+      >
+        {selectedReading && (
+          <>
+            <div className="detail-grid">
+              <div className="detail-row"><span>Meal</span><strong>{selectedReading.mealType}</strong></div>
+              <div className="detail-row"><span>Date</span><strong>{formatDate(selectedReading.loggedAt)}</strong></div>
+              <div className="detail-row"><span>Time</span><strong>{formatTime(selectedReading.loggedAt)}</strong></div>
+              {selectedReading.notes && <div className="detail-note">{selectedReading.notes}</div>}
+            </div>
+            <button className="danger-link" onClick={() => setConfirmDeleteOpen(true)}>
+              Delete this reading
+            </button>
+          </>
+        )}
+      </BottomSheet>
+      <ConfirmSheet
+        open={confirmDeleteOpen}
+        onClose={() => setConfirmDeleteOpen(false)}
+        onConfirm={handleDeleteReading}
+        title="Delete this reading?"
+        description="This removes the reading from progress and today's summary. You can add it again if needed."
+      />
     </div>
   );
 }

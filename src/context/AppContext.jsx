@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import {
+  getCarePlans,
   getAllFoodLog,
   getAllGoalsLog,
   getAllInsulinRecords,
@@ -15,6 +16,7 @@ export function AppProvider({ children }) {
   const [foodLog, setFoodLog] = useState([]);
   const [goalsLog, setGoalsLog] = useState([]);
   const [goalTargets, setGoalTargets] = useState(null);
+  const [carePlans, setCarePlans] = useState(null);
   const [insulinLog, setInsulinLog] = useState([]);
   const [settings, setSettings] = useState(null);
   const [toast, setToast] = useState(null);
@@ -24,6 +26,7 @@ export function AppProvider({ children }) {
     setFoodLog(getAllFoodLog());
     setGoalsLog(getAllGoalsLog());
     setGoalTargets(getGoalTargets());
+    setCarePlans(getCarePlans());
     setInsulinLog(getAllInsulinRecords());
     setSettings(loadSettings());
   }, []);
@@ -32,6 +35,7 @@ export function AppProvider({ children }) {
   const refreshFoodLog = () => setFoodLog(getAllFoodLog());
   const refreshGoalsLog = () => setGoalsLog(getAllGoalsLog());
   const refreshGoalTargets = () => setGoalTargets(getGoalTargets());
+  const refreshCarePlans = () => setCarePlans(getCarePlans());
   const refreshInsulinLog = () => setInsulinLog(getAllInsulinRecords());
   const refreshSettings = () => setSettings(loadSettings());
 
@@ -47,6 +51,7 @@ export function AppProvider({ children }) {
       foodLog,
       goalsLog,
       goalTargets,
+      carePlans,
       insulinLog,
       settings,
       toast,
@@ -54,11 +59,12 @@ export function AppProvider({ children }) {
       refreshFoodLog,
       refreshGoalsLog,
       refreshGoalTargets,
+      refreshCarePlans,
       refreshInsulinLog,
       refreshSettings,
       showToast,
     }),
-    [foodLog, goalTargets, goalsLog, insulinLog, readings, settings, toast]
+    [carePlans, foodLog, goalTargets, goalsLog, insulinLog, readings, settings, toast]
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

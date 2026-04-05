@@ -5,6 +5,7 @@ import BottomSheet from '../components/shared/BottomSheet';
 import { useApp } from '../context/AppContext';
 import { useTheme } from '../context/ThemeContext';
 import {
+  getEncouragementMessage,
   getLatestReading,
   getQuickInsight,
   getTodaysFasting,
@@ -56,6 +57,7 @@ function Dashboard() {
   const latestReading = getLatestReading(readings);
   const weekOverview = getWeeklyReadingOverview(readings);
   const insight = getQuickInsight({ readings, foodLog, goalsLog });
+  const encouragement = getEncouragementMessage(readings);
 
   const currentSaturday = useMemo(() => {
     const now = new Date();
@@ -206,6 +208,14 @@ function Dashboard() {
           )}
         </section>
       )}
+
+      <section className="card insight-card">
+        <div className={`encouragement-card encouragement-${encouragement.tone}`}>
+          <span className="encouragement-kicker">A note for today</span>
+          <h2>{encouragement.title}</h2>
+          <p>{encouragement.body}</p>
+        </div>
+      </section>
 
       <section className="card insight-card">
         <h2>Quick Insight</h2>
