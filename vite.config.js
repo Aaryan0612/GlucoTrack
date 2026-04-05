@@ -7,7 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
+      includeAssets: ['glucotrack-icon.svg', 'glucotrack-icon.png', 'apple-touch-icon.png'],
       manifest: {
         name: 'GlucoTrack',
         short_name: 'GlucoTrack',

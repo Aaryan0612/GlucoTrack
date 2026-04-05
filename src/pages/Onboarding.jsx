@@ -26,6 +26,11 @@ function Onboarding() {
     <div className="onboarding">
       <div className="onboarding-content">
         <div className="welcome-section">
+          <img
+            src="/glucotrack-icon.svg"
+            alt="GlucoTrack logo"
+            className="app-logo"
+          />
           <h1 className="app-name">GlucoTrack</h1>
           <p className="tagline">Your gentle daily health companion</p>
         </div>

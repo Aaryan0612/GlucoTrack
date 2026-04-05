@@ -1,0 +1,51 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="188" y1="116" x2="870" y2="906" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF9F2" />
+      <stop offset="1" stop-color="#EAF7EF" />
+    </linearGradient>
+    <linearGradient id="drop" x1="369" y1="238" x2="702" y2="736" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#74C69D" />
+      <stop offset="1" stop-color="#2D6A4F" />
+    </linearGradient>
+    <linearGradient id="dropHighlight" x1="422" y1="282" x2="557" y2="588" gradientUnits="userSpaceOnUse">
+      <stop stop-color="white" stop-opacity="0.72" />
+      <stop offset="1" stop-color="white" stop-opacity="0" />
+    </linearGradient>
+    <filter id="shadow" x="250" y="142" width="536" height="644" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="20"/>
+      <feGaussianBlur stdDeviation="28"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.176471 0 0 0 0 0.415686 0 0 0 0 0.309804 0 0 0 0.22 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1" result="shape"/>
+    </filter>
+    <filter id="badgeShadow" x="577" y="571" width="234" height="234" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="14"/>
+      <feGaussianBlur stdDeviation="16"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.905882 0 0 0 0 0.435294 0 0 0 0 0.317647 0 0 0 0.3 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1" result="shape"/>
+    </filter>
+  </defs>
+
+  <rect x="72" y="72" width="880" height="880" rx="240" fill="url(#bg)"/>
+  <circle cx="292" cy="270" r="144" fill="#D8F3DC" fill-opacity="0.6"/>
+  <circle cx="768" cy="812" r="116" fill="#CDEFE0" fill-opacity="0.65"/>
+
+  <g filter="url(#shadow)">
+    <path d="M518.08 200C466.919 276.29 334 402.82 334 539.195C334 660.59 432.499 759 554 759C675.501 759 774 660.59 774 539.195C774 402.82 641.081 276.29 589.92 200C573.833 176 534.167 176 518.08 200Z" fill="url(#drop)"/>
+    <path d="M520.112 292C481.466 348.955 417 443.027 417 526.811C417 606.602 480.039 666 557.5 666C570.812 666 584.307 664.245 596.827 660.94C523.382 637.673 470 570.196 470 487.434C470 433.837 492.997 379.056 529.639 323.951C529.893 323.569 529.815 323.062 529.459 322.772C526.317 320.212 522.975 315.763 521.83 309.201L520.112 292Z" fill="url(#dropHighlight)"/>
+  </g>
+
+  <path d="M439 536L503 472L555 518L618 438L673 480" stroke="white" stroke-width="42" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="673" cy="480" r="26" fill="white"/>
+
+  <g filter="url(#badgeShadow)">
+    <circle cx="694" cy="668" r="85" fill="#E76F51"/>
+    <path d="M696.001 715.995C693.801 715.995 691.607 715.193 689.872 713.577L687.308 711.158C642.247 669.391 612 641.301 612 606.886C612 578.797 633.776 557 661.642 557C677.254 557 692.235 564.275 702 575.746C711.765 564.275 726.746 557 742.358 557C770.224 557 792 578.797 792 606.886C792 641.301 761.753 669.391 716.692 711.158L714.128 713.577C712.393 715.193 710.199 715.995 707.999 715.995H696.001Z" fill="white"/>
+  </g>
+</svg>

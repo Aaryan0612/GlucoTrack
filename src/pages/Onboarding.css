@@ -17,6 +17,15 @@
   margin-bottom: var(--space-12);
 }
 
+.app-logo {
+  width: 88px;
+  height: 88px;
+  display: block;
+  margin: 0 auto var(--space-5);
+  border-radius: 24px;
+  box-shadow: 0 12px 30px rgba(45, 106, 79, 0.16);
+}
+
 .app-name {
   font-family: var(--font-display);
   font-size: var(--text-4xl);
