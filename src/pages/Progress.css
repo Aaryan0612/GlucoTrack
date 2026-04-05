@@ -1,15 +1,16 @@
 .progress {
-  padding: var(--space-6);
-  padding-bottom: 100px;
+  width: min(100%, 680px);
+  margin: 0 auto;
+  padding: calc(var(--space-5) + env(safe-area-inset-top)) var(--space-5) calc(112px + env(safe-area-inset-bottom));
 }
 
 .page-header-simple {
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-5);
 }
 
 .page-header-simple h1 {
   font-family: var(--font-display);
-  font-size: var(--text-2xl);
+  font-size: var(--text-3xl);
   font-weight: 600;
   color: var(--color-text-primary);
 }
@@ -22,22 +23,22 @@
 }
 
 .range-btn {
-  padding: var(--space-2) var(--space-4);
-  background: var(--color-surface-alt);
-  border: 2px solid transparent;
+  padding: 10px 16px;
+  background: var(--color-surface);
+  border: none;
   border-radius: var(--radius-full);
   font-family: var(--font-body);
   font-size: var(--text-sm);
-  font-weight: 500;
+  font-weight: 600;
   color: var(--color-text-secondary);
   cursor: pointer;
   white-space: nowrap;
+  box-shadow: var(--shadow-card);
 }
 
 .range-btn.active {
-  background: var(--color-primary-pale);
-  color: var(--color-primary);
-  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-text-on-dark);
 }
 
 .stats-grid {
@@ -47,106 +48,138 @@
   margin-bottom: var(--space-6);
 }
 
-.stat-card {
+.stat-card,
+.chart-card,
+.food-summary-row,
+.history-row,
+.reading-row,
+.insulin-progress-card {
   background: var(--color-surface);
-  border-radius: var(--radius-md);
+  border-radius: 24px;
   box-shadow: var(--shadow-card);
+}
+
+.stat-card {
   padding: var(--space-4);
   display: flex;
   flex-direction: column;
-  align-items: center;
   text-align: center;
 }
 
-.stat-label {
-  font-size: var(--text-xs);
+.stat-label,
+.stat-unit,
+.chart-heading p,
+.reading-meta,
+.history-row small {
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-2);
 }
 
 .stat-value {
   font-family: var(--font-display);
   font-size: var(--text-2xl);
-  font-weight: 600;
-  color: var(--color-text-primary);
+  margin: var(--space-2) 0 4px;
 }
 
-.stat-unit {
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
-  margin-top: var(--space-1);
+.card {
+  background: var(--color-surface);
+  border-radius: 24px;
+  box-shadow: var(--shadow-card);
+  padding: var(--space-5);
+  margin-bottom: var(--space-5);
 }
 
+.chart-heading {
+  margin-bottom: var(--space-4);
+}
+
+.chart-heading h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  margin-bottom: 6px;
+}
+
+.food-summary-list,
+.history-list,
 .readings-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+  display: grid;
+  gap: var(--space-3);
 }
 
-.reading-row {
+.food-summary-row,
+.history-row,
+.reading-row,
+.insulin-progress-card {
   padding: var(--space-4);
-  background: var(--color-surface-alt);
-  border-radius: var(--radius-sm);
 }
 
-.reading-info {
+.food-summary-row,
+.history-row {
+  display: grid;
+  gap: 4px;
+}
+
+.insulin-progress-card {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.insulin-progress-copy {
   display: flex;
   gap: var(--space-3);
   align-items: flex-start;
 }
 
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-top: 6px;
-  flex-shrink: 0;
+.banner-btn {
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 12px 16px;
+  background: var(--color-primary);
+  color: var(--color-text-on-dark);
+  font-weight: 700;
 }
 
-.status-dot.status-normal {
-  background: var(--color-normal);
-}
-
-.status-dot.status-caution {
-  background: var(--color-caution);
-}
-
-.status-dot.status-high {
-  background: var(--color-high);
-}
-
-.status-dot.status-low {
-  background: var(--color-low);
+.reading-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
 }
 
 .reading-main {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-bottom: var(--space-1);
+  display: grid;
+  gap: 6px;
 }
 
-.reading-value-text {
+.reading-main strong {
   font-size: var(--text-lg);
-  font-weight: 600;
-  color: var(--color-text-primary);
+}
+
+.reading-main span {
+  text-transform: capitalize;
+  color: var(--color-primary);
+  font-weight: 700;
 }
 
 .reading-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
+  display: grid;
+  gap: 4px;
+  text-align: right;
 }
 
-.meal-type {
-  text-transform: capitalize;
-}
+@media (max-width: 620px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
 
-.reading-notes {
-  margin-top: var(--space-2);
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-  font-style: italic;
+  .reading-row,
+  .insulin-progress-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .reading-meta {
+    text-align: left;
+  }
 }

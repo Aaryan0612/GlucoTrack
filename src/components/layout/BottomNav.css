@@ -1,17 +1,19 @@
 .bottom-nav {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
-  height: 72px;
-  background: var(--color-surface);
-  border-top: 1px solid var(--color-surface-alt);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, 720px);
+  height: 78px;
+  background: rgba(255, 255, 255, 0.88);
+  border-top: 1px solid rgba(45, 106, 79, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding-bottom: max(env(safe-area-inset-bottom), 12px);
+  padding: 0 var(--space-3) max(env(safe-area-inset-bottom), 12px);
   z-index: 100;
-  box-shadow: 0 -2px 16px rgba(0,0,0,0.06);
+  box-shadow: 0 -2px 18px rgba(0,0,0,0.06);
+  backdrop-filter: blur(16px);
 }
 
 .nav-btn {
@@ -25,7 +27,7 @@
   color: var(--color-text-muted);
   cursor: pointer;
   padding: var(--space-2);
-  min-width: 64px;
+  min-width: 60px;
 }
 
 .nav-btn span {
@@ -45,7 +47,7 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: var(--color-primary);
+  background: linear-gradient(135deg, #4f8164 0%, #2d6a4f 100%);
   color: var(--color-text-on-dark);
   box-shadow: var(--shadow-float);
   margin-top: -28px;

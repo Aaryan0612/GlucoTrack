@@ -1,0 +1,228 @@
+.goals-page {
+  width: min(100%, 620px);
+  margin: 0 auto;
+  padding: calc(var(--space-5) + env(safe-area-inset-top)) var(--space-5) calc(112px + env(safe-area-inset-bottom));
+}
+
+.goals-header {
+  margin-bottom: var(--space-6);
+}
+
+.goals-header h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  margin-bottom: var(--space-2);
+}
+
+.goal-stack {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.goal-card,
+.progress-card,
+.settings-card,
+.calendar-card,
+.streak-card-mini {
+  background: var(--color-surface);
+  border: none;
+  border-radius: 24px;
+  box-shadow: var(--shadow-card);
+}
+
+.goal-card {
+  width: 100%;
+  padding: var(--space-5);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  text-align: left;
+}
+
+.goal-card.done {
+  background: linear-gradient(180deg, var(--color-primary-pale), var(--color-surface));
+}
+
+.goal-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-2);
+}
+
+.goal-copy p {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.goal-target {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.goal-check {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--color-text-muted);
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.goal-check.done {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-text-on-dark);
+}
+
+.progress-card,
+.settings-card,
+.calendar-card {
+  margin-top: var(--space-5);
+  padding: var(--space-5);
+}
+
+.progress-copy strong,
+.calendar-card h2 {
+  display: block;
+  margin-bottom: var(--space-2);
+}
+
+.progress-copy p {
+  color: var(--color-text-secondary);
+}
+
+.progress-dots {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.progress-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-surface-alt);
+}
+
+.progress-dot.filled {
+  background: var(--color-primary);
+}
+
+.settings-toggle {
+  width: 100%;
+  border: none;
+  background: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--text-base);
+  font-weight: 700;
+}
+
+.target-list {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.target-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.stepper button {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-surface-alt);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.calendar-day {
+  border: none;
+  border-radius: 16px;
+  background: var(--color-surface-alt);
+  min-height: 72px;
+  padding: 10px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.calendar-day.perfect {
+  background: var(--color-primary-pale);
+}
+
+.calendar-day.muted {
+  opacity: 0.45;
+}
+
+.calendar-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.calendar-dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-text-muted);
+}
+
+.calendar-dots i.on {
+  background: var(--color-primary);
+}
+
+.streak-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.streak-card-mini {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--color-text-secondary);
+}
+
+.streak-card-mini strong {
+  color: var(--color-text-primary);
+}
+
+.day-detail {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.day-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-surface-alt);
+}

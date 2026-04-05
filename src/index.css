@@ -159,3 +159,42 @@ input, select, textarea {
 #root {
   min-height: 100vh;
 }
+
+.page {
+  min-height: 100vh;
+}
+
+.section-eyebrow {
+  color: var(--color-primary);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.btn-primary {
+  width: 100%;
+  min-height: 54px;
+  background: linear-gradient(135deg, #4f8164 0%, #2d6a4f 100%);
+  color: var(--color-text-on-dark);
+  border: none;
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  box-shadow: var(--shadow-float);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}

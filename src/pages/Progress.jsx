@@ -1,120 +1,261 @@
-import { useState } from 'react';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import { useMemo, useState } from 'react';
+import { Syringe } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { getReadingsInRange, getAverage } from '../utils/aggregations';
-import { getReadingStatus, getStatusLabel } from '../utils/statusHelpers';
-import { formatDate, formatTime } from '../utils/dateHelpers';
+import {
+  buildDailyAverageData,
+  buildGoalsCompletionData,
+  buildReadingLineData,
+  getAverageForMealType,
+  getFoodLoggedDaysCount,
+  getGoalCompletionRate,
+  getInsulinStreak,
+  getReadingsInRange,
+} from '../utils/aggregations';
+import { formatDate, formatTime, getMostRecentSaturday, startOfDay } from '../utils/dateHelpers';
+import { addInsulinRecord } from '../utils/storage';
 import './Progress.css';
 
+const RANGE_MAP = {
+  7: 7,
+  30: 30,
+  90: 90,
+  all: 180,
+};
+
+const STATUS_COLORS = {
+  normal: 'var(--color-normal)',
+  caution: 'var(--color-caution)',
+  high: 'var(--color-high)',
+  low: 'var(--color-low)',
+};
+
 function Progress() {
-  const { readings } = useApp();
+  const { readings, foodLog, goalsLog, insulinLog, refreshInsulinLog, showToast } = useApp();
   const [timeRange, setTimeRange] = useState('7');
+  const days = RANGE_MAP[timeRange];
 
-  const getDateRange = () => {
-    const end = new Date();
-    const start = new Date();
-    
-    if (timeRange === '7') start.setDate(end.getDate() - 7);
-    else if (timeRange === '30') start.setDate(end.getDate() - 30);
-    else if (timeRange === '90') start.setDate(end.getDate() - 90);
-    else start.setFullYear(2000);
-    
-    return { start, end };
+  const startDate = startOfDay(new Date(Date.now() - (days - 1) * 24 * 60 * 60 * 1000));
+  const endDate = new Date();
+  const filteredReadings = getReadingsInRange(readings, startDate, endDate);
+
+  const lineData = useMemo(() => buildReadingLineData(readings, days), [days, readings]);
+  const averageData = useMemo(() => buildDailyAverageData(readings, days), [days, readings]);
+  const goalsData = useMemo(() => buildGoalsCompletionData(goalsLog, days), [days, goalsLog]);
+
+  const avgFasting = getAverageForMealType(filteredReadings, 'fasting');
+  const avgPostMeal = getAverageForMealType(filteredReadings, 'post-meal');
+  const foodDays = getFoodLoggedDaysCount(foodLog, startDate, endDate);
+  const goalsRate = getGoalCompletionRate(goalsLog, days);
+  const insulinStreak = getInsulinStreak(insulinLog);
+  const currentSaturday = getMostRecentSaturday();
+  const insulinTaken = insulinLog.some((record) => record.scheduledDate === currentSaturday && record.taken);
+
+  const handleMarkInsulin = () => {
+    addInsulinRecord({
+      scheduledDate: currentSaturday,
+      taken: true,
+      takenAt: new Date().toISOString(),
+      notes: '',
+    });
+    refreshInsulinLog();
+    showToast('Insulin logged 💉');
   };
-
-  const { start, end } = getDateRange();
-  const filteredReadings = getReadingsInRange(readings, start, end);
-  
-  const fastingReadings = filteredReadings.filter(r => r.mealType === 'fasting');
-  const postMealReadings = filteredReadings.filter(r => r.mealType === 'post-meal');
-  
-  const avgFasting = getAverage(fastingReadings);
-  const avgPostMeal = getAverage(postMealReadings);
 
   return (
     <div className="page progress">
       <header className="page-header-simple">
+        <p className="section-eyebrow">Trends and history</p>
         <h1>Progress</h1>
       </header>
 
       <div className="time-range-selector">
-        <button 
-          className={`range-btn ${timeRange === '7' ? 'active' : ''}`}
-          onClick={() => setTimeRange('7')}
-        >
-          7 Days
-        </button>
-        <button 
-          className={`range-btn ${timeRange === '30' ? 'active' : ''}`}
-          onClick={() => setTimeRange('30')}
-        >
-          30 Days
-        </button>
-        <button 
-          className={`range-btn ${timeRange === '90' ? 'active' : ''}`}
-          onClick={() => setTimeRange('90')}
-        >
-          3 Months
-        </button>
-        <button 
-          className={`range-btn ${timeRange === 'all' ? 'active' : ''}`}
-          onClick={() => setTimeRange('all')}
-        >
-          All
-        </button>
+        {[
+          ['7', '7 Days'],
+          ['30', '30 Days'],
+          ['90', '3 Months'],
+          ['all', 'All'],
+        ].map(([key, label]) => (
+          <button
+            key={key}
+            className={`range-btn ${timeRange === key ? 'active' : ''}`}
+            onClick={() => setTimeRange(key)}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
       <div className="stats-grid">
         <div className="stat-card">
-          <span className="stat-label">Avg Fasting</span>
+          <span className="stat-label">Average Fasting</span>
           <span className="stat-value">{avgFasting || '—'}</span>
           {avgFasting && <span className="stat-unit">mg/dL</span>}
         </div>
         <div className="stat-card">
-          <span className="stat-label">Avg Post-Meal</span>
+          <span className="stat-label">Average Post-Meal</span>
           <span className="stat-value">{avgPostMeal || '—'}</span>
           {avgPostMeal && <span className="stat-unit">mg/dL</span>}
         </div>
         <div className="stat-card">
           <span className="stat-label">Readings Logged</span>
           <span className="stat-value">{filteredReadings.length}</span>
+          <span className="stat-unit">This period</span>
+        </div>
+      </div>
+
+      <div className="card chart-card">
+        <div className="chart-heading">
+          <h2>Blood Sugar Over Time</h2>
+          <p>Fasting and post-meal readings for this period.</p>
+        </div>
+        <ResponsiveContainer width="100%" height={240}>
+          <LineChart data={lineData} margin={{ top: 8, right: 8, left: -20, bottom: 8 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(92,92,92,0.12)" />
+            <XAxis dataKey="date" tickLine={false} axisLine={false} />
+            <YAxis tickLine={false} axisLine={false} width={36} />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="fasting" stroke="var(--color-primary)" strokeWidth={3} dot={{ r: 3 }} connectNulls={false} />
+            <Line type="monotone" dataKey="postMeal" name="post-meal" stroke="var(--color-accent)" strokeWidth={3} strokeDasharray="5 5" dot={{ r: 3 }} connectNulls={false} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="card chart-card">
+        <div className="chart-heading">
+          <h2>Daily Averages</h2>
+          <p>Each bar shows the average of that day’s readings.</p>
+        </div>
+        <ResponsiveContainer width="100%" height={220}>
+          <BarChart data={averageData} margin={{ top: 8, right: 8, left: -20, bottom: 8 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(92,92,92,0.12)" />
+            <XAxis dataKey="date" tickLine={false} axisLine={false} />
+            <YAxis tickLine={false} axisLine={false} width={36} />
+            <Tooltip />
+            <Bar dataKey="average" radius={[12, 12, 0, 0]}>
+              {averageData.map((entry) => (
+                <Cell
+                  key={entry.dateKey}
+                  fill={entry.status ? STATUS_COLORS[entry.status] : 'rgba(92,92,92,0.24)'}
+                />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="card chart-card">
+        <div className="chart-heading">
+          <h2>Goals Completion</h2>
+          <p>Goals hit {goalsRate}% of days in this period.</p>
+        </div>
+        <ResponsiveContainer width="100%" height={220}>
+          <BarChart data={goalsData} stackOffset="expand" margin={{ top: 8, right: 8, left: -20, bottom: 8 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(92,92,92,0.12)" />
+            <XAxis dataKey="date" tickLine={false} axisLine={false} />
+            <YAxis hide />
+            <Tooltip />
+            <Bar dataKey="completedCount" stackId="a" fill="var(--color-primary)" radius={[10, 10, 0, 0]} />
+            <Bar dataKey="remaining" stackId="a" fill="rgba(92,92,92,0.18)" radius={[10, 10, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="card">
+        <div className="chart-heading">
+          <h2>Food Log Summary</h2>
+          <p>Food logged on {foodDays} of {days} days in this period.</p>
+        </div>
+        <div className="food-summary-list">
+          {foodLog
+            .filter((entry) => new Date(entry.date) >= startDate)
+            .slice(-6)
+            .reverse()
+            .map((entry) => (
+              <div key={entry.id} className="food-summary-row">
+                <strong>{formatDate(entry.date)}</strong>
+                <span>{entry.mealType}</span>
+                <small>{entry.items.join(', ')}</small>
+              </div>
+            ))}
+          {!foodLog.length && (
+            <p className="empty-message">Nothing logged yet today. Tap a meal to add what you had.</p>
+          )}
         </div>
       </div>
 
       <div className="card">
-        <h2>Reading History</h2>
+        <div className="chart-heading">
+          <h2>Insulin Log</h2>
+          <p>{insulinStreak}-week streak - keep it up.</p>
+        </div>
+        <div className="insulin-progress-card">
+          <div className="insulin-progress-copy">
+            <Syringe size={18} />
+            <div>
+              <strong>{insulinTaken ? 'Taken this Saturday ✓' : 'Saturday insulin pending'}</strong>
+              <p>{formatDate(currentSaturday)}</p>
+            </div>
+          </div>
+          {!insulinTaken && (
+            <button className="banner-btn" onClick={handleMarkInsulin}>
+              Mark as Taken
+            </button>
+          )}
+        </div>
+        <div className="history-list">
+          {insulinLog
+            .slice()
+            .sort((a, b) => new Date(b.scheduledDate) - new Date(a.scheduledDate))
+            .slice(0, 12)
+            .map((record) => (
+              <div key={record.id} className="history-row">
+                <strong>{formatDate(record.scheduledDate)}</strong>
+                <span>{record.taken ? 'Taken ✓' : 'Missed ✗'}</span>
+                <small>{record.takenAt ? formatTime(record.takenAt) : 'No time recorded'}</small>
+              </div>
+            ))}
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="chart-heading">
+          <h2>Reading History</h2>
+          <p>Newest first.</p>
+        </div>
         {filteredReadings.length === 0 ? (
-          <p className="empty-message">Your history will appear here once you start logging</p>
+          <p className="empty-message">No readings yet. Tap + to log your first one 🌿</p>
         ) : (
           <div className="readings-list">
             {filteredReadings
+              .slice()
               .sort((a, b) => new Date(b.loggedAt) - new Date(a.loggedAt))
-              .map(reading => {
-                const status = getReadingStatus(reading.value, reading.mealType);
-                return (
-                  <div key={reading.id} className="reading-row">
-                    <div className="reading-info">
-                      <span className={`status-dot status-${status}`}></span>
-                      <div>
-                        <div className="reading-main">
-                          <span className="reading-value-text">{reading.value} mg/dL</span>
-                          <span className={`status-badge status-${status}`}>
-                            {getStatusLabel(status)}
-                          </span>
-                        </div>
-                        <div className="reading-meta">
-                          <span className="meal-type">{reading.mealType}</span>
-                          <span className="reading-time">
-                            {formatDate(reading.loggedAt)} at {formatTime(reading.loggedAt)}
-                          </span>
-                        </div>
-                        {reading.notes && (
-                          <p className="reading-notes">{reading.notes}</p>
-                        )}
-                      </div>
-                    </div>
+              .map((reading) => (
+                <div key={reading.id} className="reading-row">
+                  <div className="reading-main">
+                    <strong>{reading.value} mg/dL</strong>
+                    <span>{reading.mealType}</span>
                   </div>
-                );
-              })}
+                  <div className="reading-meta">
+                    <span>{formatDate(reading.loggedAt)}</span>
+                    <small>{formatTime(reading.loggedAt)}</small>
+                    {reading.notes && <small>{reading.notes}</small>}
+                  </div>
+                </div>
+              ))}
           </div>
         )}
       </div>

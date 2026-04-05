@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, Plus, TrendingUp, Syringe } from 'lucide-react';
+import { Apple, Home, PlusCircle, Target, TrendingUp } from 'lucide-react';
 import './BottomNav.css';
 
 function BottomNav() {
@@ -12,7 +12,7 @@ function BottomNav() {
 
   return (
     <nav className="bottom-nav">
-      <button 
+      <button
         className={`nav-btn ${isActive('/') ? 'active' : ''}`}
         onClick={() => navigate('/')}
         aria-label="Home"
@@ -21,30 +21,39 @@ function BottomNav() {
         <span>Home</span>
       </button>
 
-      <button 
+      <button
+        className={`nav-btn ${isActive('/food') ? 'active' : ''}`}
+        onClick={() => navigate('/food')}
+        aria-label="Food"
+      >
+        <Apple size={22} />
+        <span>Food</span>
+      </button>
+
+      <button
         className="nav-btn nav-btn-fab"
         onClick={() => navigate('/log')}
         aria-label="Log Reading"
       >
-        <Plus size={28} />
+        <PlusCircle size={28} />
       </button>
 
-      <button 
+      <button
+        className={`nav-btn ${isActive('/goals') ? 'active' : ''}`}
+        onClick={() => navigate('/goals')}
+        aria-label="Goals"
+      >
+        <Target size={22} />
+        <span>Goals</span>
+      </button>
+
+      <button
         className={`nav-btn ${isActive('/progress') ? 'active' : ''}`}
         onClick={() => navigate('/progress')}
         aria-label="Progress"
       >
         <TrendingUp size={24} />
         <span>Progress</span>
-      </button>
-
-      <button 
-        className={`nav-btn ${isActive('/insulin') ? 'active' : ''}`}
-        onClick={() => navigate('/insulin')}
-        aria-label="Insulin"
-      >
-        <Syringe size={24} />
-        <span>Insulin</span>
       </button>
     </nav>
   );
