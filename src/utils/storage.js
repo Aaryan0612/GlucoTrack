@@ -15,6 +15,7 @@ const DEFAULT_SETTINGS = {
   onboardingComplete: false,
   installPromptDismissed: false,
   pastReadingsHintDismissed: false,
+  lastGoalsNudgeHandledDate: null,
 };
 
 const DEFAULT_GOAL_TARGETS = {
@@ -162,6 +163,39 @@ export function toggleGoal(date, goalKey) {
   };
 
   newRecord[goalKey] = { completed: true, completedAt: now };
+  log.push(newRecord);
+  saveData(KEYS.goalsLog, log);
+  return newRecord;
+}
+
+export function saveGoalsForDate(date, updates) {
+  const log = getAllGoalsLog();
+  const existing = log.find((record) => record.date === date);
+  const now = new Date().toISOString();
+
+  if (existing) {
+    ['walk', 'meditation', 'exercise'].forEach((goalKey) => {
+      if (goalKey in updates) {
+        existing[goalKey] = {
+          completed: updates[goalKey],
+          completedAt: updates[goalKey] ? existing[goalKey]?.completedAt || now : null,
+        };
+      }
+    });
+    existing.updatedAt = now;
+    saveData(KEYS.goalsLog, log);
+    return existing;
+  }
+
+  const newRecord = {
+    id: crypto.randomUUID(),
+    date,
+    walk: { completed: Boolean(updates.walk), completedAt: updates.walk ? now : null },
+    meditation: { completed: Boolean(updates.meditation), completedAt: updates.meditation ? now : null },
+    exercise: { completed: Boolean(updates.exercise), completedAt: updates.exercise ? now : null },
+    createdAt: now,
+    updatedAt: now,
+  };
   log.push(newRecord);
   saveData(KEYS.goalsLog, log);
   return newRecord;

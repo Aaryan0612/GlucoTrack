@@ -230,3 +230,14 @@
   color: var(--color-text-primary);
   resize: vertical;
 }
+
+.danger-link {
+  border: none;
+  background: none;
+  color: var(--color-high);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}

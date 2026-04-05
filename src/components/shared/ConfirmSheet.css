@@ -1,0 +1,27 @@
+.confirm-description {
+  color: var(--color-text-secondary);
+  line-height: 1.55;
+}
+
+.confirm-actions {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.confirm-btn {
+  min-height: 52px;
+  border: none;
+  border-radius: var(--radius-full);
+  font-size: var(--text-base);
+  font-weight: 700;
+}
+
+.confirm-btn-danger {
+  background: var(--color-high);
+  color: var(--color-text-on-dark);
+}
+
+.confirm-btn-secondary {
+  background: var(--color-surface-alt);
+  color: var(--color-text-primary);
+}

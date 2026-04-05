@@ -1,0 +1,75 @@
+.install-banner {
+  position: sticky;
+  top: calc(var(--space-3) + env(safe-area-inset-top));
+  z-index: 120;
+  width: min(100% - 32px, 680px);
+  margin: var(--space-4) auto 0;
+  padding: var(--space-4);
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(216, 243, 220, 0.96), rgba(255, 255, 255, 0.98));
+  box-shadow: var(--shadow-card);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.install-title {
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 4px;
+}
+
+.install-text {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+}
+
+.install-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.install-cta,
+.install-dismiss,
+.install-ios-tip {
+  border: none;
+  border-radius: var(--radius-full);
+  min-height: 40px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+
+.install-cta {
+  background: var(--color-primary);
+  color: var(--color-text-on-dark);
+}
+
+.install-dismiss {
+  width: 40px;
+  justify-content: center;
+  background: rgba(255,255,255,0.7);
+  color: var(--color-text-primary);
+}
+
+.install-ios-tip {
+  background: rgba(255,255,255,0.7);
+  color: var(--color-primary);
+  font-size: var(--text-sm);
+}
+
+@media (max-width: 520px) {
+  .install-banner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .install-actions {
+    justify-content: space-between;
+  }
+}

@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Apple, Clock3, Plus, Search } from 'lucide-react';
+import { Apple, Clock3, Plus, Search, Trash2 } from 'lucide-react';
 import BottomSheet from '../components/shared/BottomSheet';
+import ConfirmSheet from '../components/shared/ConfirmSheet';
 import { useApp } from '../context/AppContext';
 import {
   QUICK_ADD_ITEMS,
+  deleteMealEntry,
   saveMealEntry,
 } from '../utils/storage';
 import {
@@ -35,6 +37,7 @@ function Food() {
   const [draftItems, setDraftItems] = useState([]);
   const [draftNotes, setDraftNotes] = useState('');
   const [draftTime, setDraftTime] = useState(toInputTimeValue(new Date()));
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
   const dateMeals = useMemo(
     () => foodLog.filter((entry) => entry.date === selectedDate),
@@ -83,6 +86,15 @@ function Food() {
 
     refreshFoodLog();
     showToast('Meal logged ✓');
+    setActiveMeal(null);
+  };
+
+  const handleDeleteMeal = () => {
+    if (!activeEntry) return;
+    deleteMealEntry(activeEntry.id);
+    refreshFoodLog();
+    showToast('Meal removed');
+    setConfirmDeleteOpen(false);
     setActiveMeal(null);
   };
 
@@ -236,9 +248,22 @@ function Food() {
             <button className="btn-primary" onClick={handleSaveMeal}>
               Save {MEAL_META[activeMeal].label}
             </button>
+            {activeEntry && (
+              <button className="danger-link" onClick={() => setConfirmDeleteOpen(true)}>
+                <Trash2 size={16} /> Remove this meal
+              </button>
+            )}
           </>
         )}
       </BottomSheet>
+      <ConfirmSheet
+        open={confirmDeleteOpen}
+        onClose={() => setConfirmDeleteOpen(false)}
+        onConfirm={handleDeleteMeal}
+        title="Remove this food entry?"
+        description="This will remove the meal for that day. You can always add it again later."
+        confirmLabel="Remove meal"
+      />
     </div>
   );
 }

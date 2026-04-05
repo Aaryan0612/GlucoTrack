@@ -203,3 +203,119 @@ export function getQuickInsight({ readings, foodLog, goalsLog }) {
 
   return 'A small update today can make tomorrow feel calmer.';
 }
+
+function hashString(value) {
+  return [...value].reduce((acc, char) => acc + char.charCodeAt(0), 0);
+}
+
+function pickMessage(list, seed) {
+  return list[hashString(seed) % list.length];
+}
+
+export function getPreviousReading(readings, latestReading) {
+  if (!latestReading) return null;
+  return [...readings]
+    .filter(
+      (reading) =>
+        reading.id !== latestReading.id &&
+        reading.mealType === latestReading.mealType &&
+        new Date(reading.loggedAt) < new Date(latestReading.loggedAt)
+    )
+    .sort((a, b) => new Date(b.loggedAt) - new Date(a.loggedAt))[0] || null;
+}
+
+export function getMealTypeWeekAverage(readings, latestReading) {
+  if (!latestReading) return null;
+  const latestDate = new Date(latestReading.loggedAt);
+  const weekStart = startOfDay(addDays(latestDate, -7));
+  const weekReadings = readings.filter(
+    (reading) =>
+      reading.id !== latestReading.id &&
+      reading.mealType === latestReading.mealType &&
+      new Date(reading.loggedAt) >= weekStart &&
+      new Date(reading.loggedAt) < latestDate
+  );
+  return getAverage(weekReadings);
+}
+
+export function getEncouragementMessage(readings) {
+  const latestReading = getLatestReading(readings);
+  if (!latestReading) {
+    return {
+      tone: 'steady',
+      title: 'One gentle step at a time',
+      body: 'Every reading you log helps turn worry into clarity.',
+    };
+  }
+
+  const status = getReadingStatus(latestReading.value, latestReading.mealType);
+  const previousReading = getPreviousReading(readings, latestReading);
+  const weekAverage = getMealTypeWeekAverage(readings, latestReading);
+  const improvedVsPrevious = previousReading ? latestReading.value < previousReading.value : false;
+  const improvedVsWeek = typeof weekAverage === 'number' ? latestReading.value < weekAverage : false;
+  const trendUp = previousReading ? latestReading.value > previousReading.value : false;
+
+  const supportiveHighQuotes = [
+    {
+      title: 'A higher number is not a failure',
+      body: 'This is just one moment. You are still doing the right thing by tracking it.',
+    },
+    {
+      title: 'Breathe. This number will pass',
+      body: 'One reading does not define your whole day or your progress.',
+    },
+    {
+      title: 'You are stronger than one result',
+      body: 'Seeing it early means you can respond with calm and care.',
+    },
+  ];
+
+  const progressQuotes = [
+    {
+      title: 'This is progress worth noticing',
+      body: 'Today looks a little gentler than before. Keep going with the same care.',
+    },
+    {
+      title: 'Your steady effort is showing',
+      body: 'Small daily choices are adding up in a beautiful way.',
+    },
+    {
+      title: 'Well done',
+      body: 'This reading is a lovely sign that your consistency is helping.',
+    },
+  ];
+
+  const neutralQuotes = [
+    {
+      title: 'You are doing enough today',
+      body: 'Logging with honesty is already a meaningful act of self-care.',
+    },
+    {
+      title: 'Keep taking it gently',
+      body: 'Calm, regular tracking is one of the best gifts you can give yourself.',
+    },
+    {
+      title: 'Your care matters',
+      body: 'Each note you save builds a clearer picture and a calmer routine.',
+    },
+  ];
+
+  if ((status === 'high' || status === 'caution') && (trendUp || (typeof weekAverage === 'number' && latestReading.value > weekAverage))) {
+    return {
+      tone: 'supportive',
+      ...pickMessage(supportiveHighQuotes, latestReading.id || latestReading.loggedAt),
+    };
+  }
+
+  if (status === 'normal' || improvedVsPrevious || improvedVsWeek) {
+    return {
+      tone: 'progress',
+      ...pickMessage(progressQuotes, latestReading.id || latestReading.loggedAt),
+    };
+  }
+
+  return {
+    tone: 'steady',
+    ...pickMessage(neutralQuotes, latestReading.id || latestReading.loggedAt),
+  };
+}

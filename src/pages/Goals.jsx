@@ -1,11 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronDown, ChevronUp, Flame, Minus, Plus } from 'lucide-react';
 import BottomSheet from '../components/shared/BottomSheet';
 import { useApp } from '../context/AppContext';
 import { getGoalStreak } from '../utils/aggregations';
-import { getMonthGrid } from '../utils/dateHelpers';
-import { toggleGoal, updateGoalTarget } from '../utils/storage';
-import { toDateKey, isSameMonth } from '../utils/dateHelpers';
+import { addDays, getMonthGrid, isSameMonth, toDateKey } from '../utils/dateHelpers';
+import { saveGoalsForDate, toggleGoal, updateGoalTarget, updateSettings } from '../utils/storage';
 import './Goals.css';
 
 const GOAL_META = {
@@ -33,11 +32,21 @@ const GOAL_META = {
 };
 
 function Goals() {
-  const { goalsLog, goalTargets, refreshGoalsLog, refreshGoalTargets, showToast } = useApp();
+  const { goalsLog, goalTargets, settings, refreshGoalsLog, refreshGoalTargets, refreshSettings, showToast } = useApp();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState(null);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [yesterdaySheetOpen, setYesterdaySheetOpen] = useState(false);
   const todayKey = toDateKey();
+  const yesterdayKey = toDateKey(addDays(new Date(), -1));
   const todayGoals = goalsLog.find((entry) => entry.date === todayKey);
+  const yesterdayGoals = goalsLog.find((entry) => entry.date === yesterdayKey);
+  const [yesterdayDraft, setYesterdayDraft] = useState({
+    walk: yesterdayGoals?.walk?.completed ?? false,
+    meditation: yesterdayGoals?.meditation?.completed ?? false,
+    exercise: yesterdayGoals?.exercise?.completed ?? false,
+  });
+  const previousCompletedCount = useRef(0);
 
   const completedCount = ['walk', 'meditation', 'exercise'].filter(
     (goalKey) => todayGoals?.[goalKey]?.completed
@@ -51,6 +60,25 @@ function Goals() {
     2: 'Almost there - one more! 🌿',
     3: 'All done! Wonderful day 🎉',
   }[completedCount];
+
+  useEffect(() => {
+    setYesterdayDraft({
+      walk: yesterdayGoals?.walk?.completed ?? false,
+      meditation: yesterdayGoals?.meditation?.completed ?? false,
+      exercise: yesterdayGoals?.exercise?.completed ?? false,
+    });
+  }, [yesterdayGoals]);
+
+  useEffect(() => {
+    if (completedCount === 3 && previousCompletedCount.current < 3) {
+      setShowConfetti(true);
+      const timeoutId = window.setTimeout(() => setShowConfetti(false), 2200);
+      previousCompletedCount.current = completedCount;
+      return () => window.clearTimeout(timeoutId);
+    }
+    previousCompletedCount.current = completedCount;
+    return undefined;
+  }, [completedCount]);
 
   const handleToggleGoal = (goalKey) => {
     toggleGoal(todayKey, goalKey);
@@ -69,13 +97,57 @@ function Goals() {
     refreshGoalTargets();
   };
 
+  const shouldShowYesterdayNudge =
+    settings?.lastGoalsNudgeHandledDate !== yesterdayKey &&
+    (!yesterdayGoals ||
+      ['walk', 'meditation', 'exercise'].some((goalKey) => !yesterdayGoals?.[goalKey]?.completed));
+
+  const handleSaveYesterdayGoals = () => {
+    saveGoalsForDate(yesterdayKey, yesterdayDraft);
+    updateSettings({ lastGoalsNudgeHandledDate: yesterdayKey });
+    refreshGoalsLog();
+    refreshSettings();
+    setYesterdaySheetOpen(false);
+    showToast('Yesterday updated ✓');
+  };
+
+  const handleDismissYesterdayNudge = () => {
+    updateSettings({ lastGoalsNudgeHandledDate: yesterdayKey });
+    refreshSettings();
+    setYesterdaySheetOpen(false);
+  };
+
   return (
     <div className="page goals-page">
+      {showConfetti && (
+        <div className="celebration-layer" aria-hidden="true">
+          {Array.from({ length: 18 }, (_, index) => (
+            <span key={index} className={`celebration-piece piece-${index % 6}`} />
+          ))}
+        </div>
+      )}
       <header className="goals-header">
         <p className="section-eyebrow">Daily habits</p>
         <h1>Daily Goals</h1>
         <p className="subtitle">Small, steady routines build a calmer week.</p>
       </header>
+
+      {shouldShowYesterdayNudge && (
+        <section className="yesterday-nudge">
+          <div>
+            <strong>Did you complete your goals yesterday?</strong>
+            <p>You can quickly fill in yesterday if it slipped your mind.</p>
+          </div>
+          <div className="yesterday-actions">
+            <button className="mini-primary" onClick={() => setYesterdaySheetOpen(true)}>
+              Yes, review
+            </button>
+            <button className="mini-secondary" onClick={handleDismissYesterdayNudge}>
+              Skip
+            </button>
+          </div>
+        </section>
+      )}
 
       <section className="goal-stack">
         {Object.entries(GOAL_META).map(([goalKey, meta]) => {
@@ -191,6 +263,32 @@ function Goals() {
             ))}
           </div>
         )}
+      </BottomSheet>
+
+      <BottomSheet
+        open={yesterdaySheetOpen}
+        onClose={() => setYesterdaySheetOpen(false)}
+        title="Yesterday's goals"
+      >
+        <p className="sheet-helper">Mark what was completed yesterday. It only takes a moment.</p>
+        {Object.entries(GOAL_META).map(([goalKey, meta]) => (
+          <button
+            key={goalKey}
+            className={`yesterday-goal-row ${yesterdayDraft[goalKey] ? 'done' : ''}`}
+            onClick={() =>
+              setYesterdayDraft((current) => ({ ...current, [goalKey]: !current[goalKey] }))
+            }
+          >
+            <span>{meta.emoji} {meta.title}</span>
+            <strong>{yesterdayDraft[goalKey] ? 'Yes' : 'No'}</strong>
+          </button>
+        ))}
+        <button className="btn-primary" onClick={handleSaveYesterdayGoals}>
+          Save yesterday
+        </button>
+        <button className="mini-secondary full-width" onClick={handleDismissYesterdayNudge}>
+          Skip for now
+        </button>
       </BottomSheet>
     </div>
   );
