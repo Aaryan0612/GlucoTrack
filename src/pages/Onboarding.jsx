@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loadSettings, saveSettings } from '../utils/storage';
+import { useApp } from '../context/AppContext';
 import './Onboarding.css';
 
 function Onboarding() {
   const navigate = useNavigate();
   const [name, setName] = useState('');
+  const { refreshSettings } = useApp();
 
   const handleComplete = (e) => {
     e.preventDefault();
@@ -19,6 +21,7 @@ function Onboarding() {
       onboardingComplete: true
     });
 
+    refreshSettings();
     navigate('/');
   };
 
