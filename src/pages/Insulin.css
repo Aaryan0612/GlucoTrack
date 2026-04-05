@@ -1,0 +1,141 @@
+.insulin {
+  padding: var(--space-6);
+  padding-bottom: 100px;
+}
+
+.insulin-status {
+  text-align: center;
+  padding: var(--space-8);
+}
+
+.insulin-status.pending {
+  background: var(--color-accent-light);
+  border: 2px solid var(--color-accent);
+}
+
+.insulin-status.taken {
+  background: var(--color-primary-pale);
+  border: 2px solid var(--color-primary);
+}
+
+.insulin-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-4);
+  color: var(--color-text-primary);
+}
+
+.insulin-status h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.insulin-date {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-4);
+}
+
+.status-taken {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: var(--text-lg);
+}
+
+.checkmark {
+  font-size: var(--text-2xl);
+}
+
+.status-pending {
+  color: var(--color-accent);
+  font-weight: 600;
+  margin-bottom: var(--space-4);
+}
+
+.streak-card {
+  background: linear-gradient(135deg, var(--color-primary-pale) 0%, var(--color-surface) 100%);
+}
+
+.streak-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.streak-emoji {
+  font-size: var(--text-4xl);
+}
+
+.streak-content h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.streak-content p {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.history-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-sm);
+}
+
+.history-status {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.history-status.taken {
+  background: var(--color-primary-pale);
+  color: var(--color-primary);
+}
+
+.history-status.missed {
+  background: #FFE5E5;
+  color: var(--color-high);
+}
+
+.history-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.history-date {
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.history-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}

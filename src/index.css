@@ -1,0 +1,161 @@
+/* CSS Variables - Light Theme */
+:root {
+  /* Background & Surface */
+  --color-bg: #FAF7F2;
+  --color-surface: #FFFFFF;
+  --color-surface-alt: #F2EDE6;
+  
+  /* Primary Brand */
+  --color-primary: #2D6A4F;
+  --color-primary-light: #52B788;
+  --color-primary-pale: #D8F3DC;
+  
+  /* Accent */
+  --color-accent: #E76F51;
+  --color-accent-light: #FFF0EC;
+  
+  /* Text */
+  --color-text-primary: #1A1A1A;
+  --color-text-secondary: #5C5C5C;
+  --color-text-muted: #9E9E9E;
+  --color-text-on-dark: #FFFFFF;
+  
+  /* Semantic Status Colors */
+  --color-normal: #2D6A4F;
+  --color-caution: #F4A261;
+  --color-high: #E63946;
+  --color-low: #457B9D;
+  
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 999px;
+  
+  /* Shadows */
+  --shadow-card: 0 2px 16px rgba(0,0,0,0.06);
+  --shadow-modal: 0 8px 40px rgba(0,0,0,0.12);
+  --shadow-float: 0 4px 24px rgba(45,106,79,0.15);
+  
+  /* Typography */
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 22px;
+  --text-2xl: 28px;
+  --text-3xl: 36px;
+  --text-4xl: 48px;
+  
+  /* Fonts */
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --color-bg: #1A1A18;
+  --color-surface: #252521;
+  --color-surface-alt: #2E2E2A;
+  
+  --color-primary: #52B788;
+  --color-primary-light: #74C69D;
+  --color-primary-pale: #1A3D2B;
+  
+  --color-accent: #E76F51;
+  --color-accent-light: #3D1F16;
+  
+  --color-text-primary: #F0EDE8;
+  --color-text-secondary: #A89F96;
+  --color-text-muted: #6B6560;
+  --color-text-on-dark: #FFFFFF;
+  
+  --color-normal: #52B788;
+  --color-caution: #F4A261;
+  --color-high: #FF6B6B;
+  --color-low: #6EB5D4;
+  
+  --shadow-card: 0 2px 16px rgba(0,0,0,0.3);
+  --shadow-modal: 0 8px 40px rgba(0,0,0,0.5);
+  --shadow-float: 0 4px 24px rgba(82,183,136,0.2);
+}
+
+/* Reset & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  transition: background-color 0.3s ease;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-user-select: none;
+  user-select: none;
+  overscroll-behavior: none;
+}
+
+/* Re-enable selection for text content */
+input, textarea, p, span, [data-selectable] {
+  -webkit-user-select: auto;
+  user-select: auto;
+}
+
+/* Remove tap highlight */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Input font size to prevent iOS zoom */
+input, select, textarea {
+  font-size: 16px;
+}
+
+/* Hide scrollbars */
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Smooth transitions */
+*, *::before, *::after {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease;
+}
+
+/* Disable transitions for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+#root {
+  min-height: 100vh;
+}

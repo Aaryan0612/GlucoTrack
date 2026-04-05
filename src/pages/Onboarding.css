@@ -1,0 +1,83 @@
+.onboarding {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  background: var(--color-bg);
+}
+
+.onboarding-content {
+  width: 100%;
+  max-width: 400px;
+}
+
+.welcome-section {
+  text-align: center;
+  margin-bottom: var(--space-12);
+}
+
+.app-name {
+  font-family: var(--font-display);
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: var(--space-3);
+}
+
+.tagline {
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+}
+
+.name-form {
+  margin-bottom: var(--space-12);
+}
+
+.name-input {
+  width: 100%;
+  height: 56px;
+  background: var(--color-surface);
+  border: 2px solid var(--color-surface-alt);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-4);
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-card);
+}
+
+.name-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.name-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.features-preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+
+.feature-emoji {
+  font-size: var(--text-2xl);
+}
+
+.feature-item p {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+}
