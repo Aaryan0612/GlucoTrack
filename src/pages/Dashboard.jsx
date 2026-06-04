@@ -28,13 +28,30 @@ import { playSongMelody, playMeditationOm, stopAllAudio } from '../utils/audioEn
 import { saveLocalSong, getLocalSongUrl, hasLocalSong, deleteLocalSong } from '../utils/audioStorage';
 import './Dashboard.css';
 
-const renderFoodRelationBadge = (relation) => {
-  if (!relation || relation === 'none') return null;
+const renderFoodRelationBadge = (relation, notes = '', name = '') => {
+  let rel = relation;
+  if (!rel || rel === 'none') {
+    const notesLower = notes.toLowerCase();
+    const nameLower = name.toLowerCase();
+    if (notesLower.includes('before') || nameLower.includes('voglibose')) {
+      rel = 'before';
+    } else if (notesLower.includes('with') || nameLower.includes('gliclazide') || nameLower.includes('metformin') || nameLower.includes('linagliptin') || nameLower.includes('dapa')) {
+      rel = 'with';
+    } else if (notesLower.includes('after')) {
+      rel = 'after';
+    } else {
+      rel = 'none';
+    }
+  }
+
+  if (rel === 'none') return null;
+
   const config = {
     before: { text: 'Before Meal / जेवणापूर्वी 🍽️', className: 'relation-before' },
     with: { text: 'With Meal / जेवणासोबत 🍲', className: 'relation-with' },
     after: { text: 'After Meal / जेवणानंतर 🥄', className: 'relation-after' },
-  }[relation];
+  }[rel];
+
   if (!config) return null;
   return (
     <span className={`food-relation-badge ${config.className}`}>
@@ -652,7 +669,7 @@ function Dashboard() {
                     {item.type === 'medicine' ? (
                       <>
                         <span className="timeline-sub">Dosage: {item.dosage || '1 unit'}</span>
-                        {renderFoodRelationBadge(item.foodRelation)}
+                        {renderFoodRelationBadge(item.foodRelation, item.raw?.notes, item.name)}
                         {item.taken ? (
                           <span className="timeline-sub taken">
                             Taken at {formatTime(item.takenAt)}

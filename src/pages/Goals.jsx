@@ -19,13 +19,30 @@ import { addDays, getMonthGrid, isSameMonth, toDateKey, formatTimeStr } from '..
 import ProfileTab from './ProfileTab';
 import './Goals.css';
 
-const renderFoodRelationBadge = (relation) => {
-  if (!relation || relation === 'none') return null;
+const renderFoodRelationBadge = (relation, notes = '', name = '') => {
+  let rel = relation;
+  if (!rel || rel === 'none') {
+    const notesLower = notes.toLowerCase();
+    const nameLower = name.toLowerCase();
+    if (notesLower.includes('before') || nameLower.includes('voglibose')) {
+      rel = 'before';
+    } else if (notesLower.includes('with') || nameLower.includes('gliclazide') || nameLower.includes('metformin') || nameLower.includes('linagliptin') || nameLower.includes('dapa')) {
+      rel = 'with';
+    } else if (notesLower.includes('after')) {
+      rel = 'after';
+    } else {
+      rel = 'none';
+    }
+  }
+
+  if (rel === 'none') return null;
+
   const config = {
     before: { text: 'Before Meal / जेवणापूर्वी 🍽️', className: 'relation-before' },
     with: { text: 'With Meal / जेवणासोबत 🍲', className: 'relation-with' },
     after: { text: 'After Meal / जेवणानंतर 🥄', className: 'relation-after' },
-  }[relation];
+  }[rel];
+
   if (!config) return null;
   return (
     <span className={`food-relation-badge ${config.className}`}>
@@ -563,7 +580,7 @@ function Goals() {
                     </div>
                     <span className="med-meta">Dosage: {med.dosage || '—'}</span>
                     <span className="med-meta">Consume at: {formatTimeStr(med.time)}</span>
-                    {renderFoodRelationBadge(med.foodRelation)}
+                    {renderFoodRelationBadge(med.foodRelation, med.notes, med.name)}
                     {med.notes && <p className="med-notes" style={{ marginTop: '4px' }}>Note: {med.notes}</p>}
                   </div>
                   <button className="inline-link" onClick={() => handleOpenEditMed(med)}>
