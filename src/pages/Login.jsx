@@ -32,7 +32,7 @@ function Login() {
       <div className="login-card">
         <div className="brand-header">
           <img
-            src="/glucotrack-icon.svg"
+            src="/glucotrack-icon.png"
             alt="GlucoTrack logo"
             className="brand-logo"
           />
