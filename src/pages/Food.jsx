@@ -4,12 +4,7 @@ import { Apple, Clock3, FilePenLine, Plus, Search, Trash2 } from 'lucide-react';
 import BottomSheet from '../components/shared/BottomSheet';
 import ConfirmSheet from '../components/shared/ConfirmSheet';
 import { useApp } from '../context/AppContext';
-import {
-  QUICK_ADD_ITEMS,
-  deleteMealEntry,
-  saveMealEntry,
-  updateCarePlan,
-} from '../utils/storage';
+import { QUICK_ADD_ITEMS } from '../utils/storage';
 import {
   addDays,
   formatDate,
@@ -31,7 +26,7 @@ const MEAL_META = {
 
 function Food() {
   const location = useLocation();
-  const { carePlans, foodLog, refreshCarePlans, refreshFoodLog, showToast } = useApp();
+  const { carePlans, foodLog, showToast, saveMealEntry, deleteMealEntry, updateCarePlan } = useApp();
   const [selectedDate, setSelectedDate] = useState(toDateKey());
   const [activeMeal, setActiveMeal] = useState(location.state?.mealType || null);
   const [search, setSearch] = useState('');
@@ -87,7 +82,6 @@ function Food() {
       loggedAt: combineDateAndTime(selectedDate, draftTime),
     });
 
-    refreshFoodLog();
     showToast('Meal logged ✓');
     setActiveMeal(null);
   };
@@ -95,7 +89,6 @@ function Food() {
   const handleDeleteMeal = () => {
     if (!activeEntry) return;
     deleteMealEntry(activeEntry.id);
-    refreshFoodLog();
     showToast('Meal removed');
     setConfirmDeleteOpen(false);
     setActiveMeal(null);
@@ -109,7 +102,6 @@ function Food() {
   const handleSavePlan = () => {
     if (!editingPlan) return;
     updateCarePlan('mealPlans', editingPlan, planDraft.trim());
-    refreshCarePlans();
     showToast('Meal plan updated ✓');
     setEditingPlan(null);
   };

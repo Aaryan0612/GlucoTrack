@@ -14,17 +14,17 @@
   --color-accent: #E76F51;
   --color-accent-light: #FFF0EC;
   
-  /* Text */
-  --color-text-primary: #1A1A1A;
-  --color-text-secondary: #5C5C5C;
-  --color-text-muted: #9E9E9E;
+  /* Text - High Contrast for Readability */
+  --color-text-primary: #111111; /* Darker black */
+  --color-text-secondary: #3D3D3D; /* Darker gray */
+  --color-text-muted: #6B6B6B; /* Darker gray */
   --color-text-on-dark: #FFFFFF;
   
   /* Semantic Status Colors */
   --color-normal: #2D6A4F;
-  --color-caution: #F4A261;
-  --color-high: #E63946;
-  --color-low: #457B9D;
+  --color-caution: #D97706; /* High contrast amber */
+  --color-high: #DC2626; /* High contrast red */
+  --color-low: #1D4ED8; /* High contrast blue */
   
   /* Spacing */
   --space-1: 4px;
@@ -49,15 +49,15 @@
   --shadow-modal: 0 8px 40px rgba(0,0,0,0.12);
   --shadow-float: 0 4px 24px rgba(45,106,79,0.15);
   
-  /* Typography */
-  --text-xs: 12px;
-  --text-sm: 14px;
-  --text-base: 16px;
-  --text-lg: 18px;
-  --text-xl: 22px;
-  --text-2xl: 28px;
-  --text-3xl: 36px;
-  --text-4xl: 48px;
+  /* Typography - Scaled Up for Readability */
+  --text-xs: 13px;
+  --text-sm: 15px;
+  --text-base: 17px;
+  --text-lg: 20px;
+  --text-xl: 24px;
+  --text-2xl: 30px;
+  --text-3xl: 38px;
+  --text-4xl: 50px;
   
   /* Fonts */
   --font-display: 'Cormorant Garamond', serif;
@@ -66,9 +66,9 @@
 
 /* Dark Theme */
 [data-theme="dark"] {
-  --color-bg: #1A1A18;
-  --color-surface: #252521;
-  --color-surface-alt: #2E2E2A;
+  --color-bg: #121211; /* Darker black */
+  --color-surface: #1E1E1B;
+  --color-surface-alt: #2B2B27;
   
   --color-primary: #52B788;
   --color-primary-light: #74C69D;
@@ -77,19 +77,20 @@
   --color-accent: #E76F51;
   --color-accent-light: #3D1F16;
   
-  --color-text-primary: #F0EDE8;
-  --color-text-secondary: #A89F96;
-  --color-text-muted: #6B6560;
+  /* High Contrast Text for Dark Mode */
+  --color-text-primary: #FBFBFA; /* Brighter white */
+  --color-text-secondary: #E3DDD5; /* Light cream */
+  --color-text-muted: #B3ABA0; /* Soft gray */
   --color-text-on-dark: #FFFFFF;
   
   --color-normal: #52B788;
-  --color-caution: #F4A261;
-  --color-high: #FF6B6B;
-  --color-low: #6EB5D4;
+  --color-caution: #FBBF24; /* Brighter amber */
+  --color-high: #FCA5A5; /* Brighter red */
+  --color-low: #93C5FD; /* Brighter blue */
   
-  --shadow-card: 0 2px 16px rgba(0,0,0,0.3);
-  --shadow-modal: 0 8px 40px rgba(0,0,0,0.5);
-  --shadow-float: 0 4px 24px rgba(82,183,136,0.2);
+  --shadow-card: 0 2px 16px rgba(0,0,0,0.4);
+  --shadow-modal: 0 8px 40px rgba(0,0,0,0.6);
+  --shadow-float: 0 4px 24px rgba(82,183,136,0.3);
 }
 
 /* Reset & Base Styles */
@@ -128,8 +129,13 @@ input, textarea, p, span, [data-selectable] {
 }
 
 /* Input font size to prevent iOS zoom */
-input, select, textarea {
+input, select, textarea, button {
   font-size: 16px;
+  font-family: inherit;
+}
+
+button {
+  color: inherit;
 }
 
 /* Hide scrollbars */

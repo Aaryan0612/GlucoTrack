@@ -16,6 +16,12 @@
   backdrop-filter: blur(16px);
 }
 
+[data-theme="dark"] .bottom-nav {
+  background: rgba(30, 30, 27, 0.94);
+  border-top-color: rgba(82, 183, 136, 0.18);
+  box-shadow: 0 -2px 18px rgba(0, 0, 0, 0.4);
+}
+
 .nav-btn {
   display: flex;
   flex-direction: column;

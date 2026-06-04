@@ -90,6 +90,8 @@
   justify-content: space-between;
   gap: var(--space-4);
   text-align: left;
+  color: var(--color-text-primary);
+  cursor: pointer;
 }
 
 .goal-card.done {
@@ -325,9 +327,10 @@
 }
 
 .care-plan-card {
-  background: rgba(242, 237, 230, 0.58);
+  background: var(--color-surface-alt);
   border-radius: 20px;
   padding: var(--space-4);
+  border: 1px solid rgba(45, 106, 79, 0.05);
 }
 
 .formatted-plan {
@@ -436,3 +439,263 @@
   padding: var(--space-3) 0;
   border-bottom: 1px solid var(--color-surface-alt);
 }
+
+/* ==========================================================================
+   NEW TABS AND CARD COMPONENT STYLES (Medicines & Reminders)
+   ========================================================================== */
+
+/* Sub-Tabs Selector Header */
+.goals-tabs {
+  display: flex;
+  background-color: var(--color-surface-alt);
+  padding: 6px;
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-6);
+  border: 1px solid rgba(92, 92, 92, 0.05);
+}
+
+.goals-tabs button {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 12px 16px;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.goals-tabs button.active {
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(45, 106, 79, 0.08);
+}
+
+[data-theme="dark"] .goals-tabs button.active {
+  background-color: var(--color-surface-alt);
+  color: var(--color-primary-light);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Layout Containers */
+.tab-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-5);
+}
+
+.tab-header-row h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  color: var(--color-text-primary);
+}
+
+.meds-container,
+.reminders-container {
+  display: grid;
+  gap: var(--space-4);
+}
+
+/* Card Visuals */
+.med-card,
+.rem-card {
+  background: var(--color-surface);
+  border-radius: 24px;
+  padding: var(--space-5);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  border: 1px solid rgba(92, 92, 92, 0.04);
+}
+
+.med-details,
+.rem-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  flex: 1;
+}
+
+.med-title-row,
+.rem-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.med-meta,
+.rem-meta {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.med-notes {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-top: 2px;
+}
+
+.days-badge-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: var(--space-1);
+}
+
+.days-badge-mini {
+  font-size: 10px;
+  font-weight: 700;
+  background-color: var(--color-surface-alt);
+  color: var(--color-text-muted);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.days-badge-mini.active {
+  background-color: var(--color-primary-pale);
+  color: var(--color-primary);
+}
+
+/* Modal and Sheet Forms */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  width: 100%;
+  text-align: left;
+}
+
+.form-group label {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.form-input {
+  width: 100%;
+  min-height: 52px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-alt);
+  padding: 0 var(--space-4);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--color-text-primary);
+}
+
+.form-input:focus {
+  outline: 2px solid var(--color-primary);
+}
+
+.days-grid-selector {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  margin-top: 4px;
+  width: 100%;
+}
+
+.day-chk-btn {
+  flex: 1;
+  height: 44px;
+  border: 1px solid rgba(92, 92, 92, 0.15);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.day-chk-btn.active {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-dark);
+  border-color: var(--color-primary);
+}
+
+.checkbox-group-row {
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+  margin-top: 4px;
+}
+
+.checkbox-label-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.checkbox-label-btn input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-primary);
+}
+
+.danger-button-row {
+  width: 100%;
+  margin-top: var(--space-5);
+  border-top: 1px solid rgba(92, 92, 92, 0.08);
+  padding-top: var(--space-4);
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Dark theme overrides for Goals page */
+[data-theme="dark"] .care-plan-card {
+  background: var(--color-surface-alt);
+  border-color: rgba(82, 183, 136, 0.18);
+}
+
+[data-theme="dark"] .med-card,
+[data-theme="dark"] .rem-card {
+  background: var(--color-surface);
+  border-color: rgba(82, 183, 136, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="dark"] .form-input {
+  background-color: var(--color-surface-alt);
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .day-chk-btn {
+  background-color: var(--color-surface-alt);
+  color: var(--color-text-secondary);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .day-chk-btn.active {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-dark);
+  border-color: var(--color-primary);
+}
+
+[data-theme="dark"] .danger-button-row {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+

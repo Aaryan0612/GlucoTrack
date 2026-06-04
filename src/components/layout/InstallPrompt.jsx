@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Download, Share2, X } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
-import { useApp } from '../../context/AppContext';
-import { updateSettings } from '../../utils/storage';
 import './InstallPrompt.css';
 
 function isStandalone() {
@@ -15,9 +13,12 @@ function isIOS() {
 
 function InstallPrompt() {
   const location = useLocation();
-  const { settings, refreshSettings } = useApp();
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [ready, setReady] = useState(false);
+  const [sessionDismissed, setSessionDismissed] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return sessionStorage.getItem('installPromptDismissed') === 'true';
+  });
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (event) => {
@@ -31,17 +32,17 @@ function InstallPrompt() {
   }, []);
 
   const shouldShow = useMemo(() => {
-    if (!settings || settings.installPromptDismissed) return false;
+    if (sessionDismissed) return false;
     if (typeof window === 'undefined') return false;
     if (location.pathname === '/onboarding') return false;
     return !isStandalone() && (ready || isIOS());
-  }, [location.pathname, ready, settings]);
+  }, [location.pathname, ready, sessionDismissed]);
 
   if (!shouldShow) return null;
 
   const handleDismiss = () => {
-    updateSettings({ installPromptDismissed: true });
-    refreshSettings();
+    sessionStorage.setItem('installPromptDismissed', 'true');
+    setSessionDismissed(true);
   };
 
   const handleInstall = async () => {

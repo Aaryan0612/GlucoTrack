@@ -13,7 +13,8 @@ import {
   YAxis,
 } from 'recharts';
 import { useMemo, useState } from 'react';
-import { Syringe } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Syringe, Pill } from 'lucide-react';
 import BottomSheet from '../components/shared/BottomSheet';
 import ConfirmSheet from '../components/shared/ConfirmSheet';
 import { useApp } from '../context/AppContext';
@@ -28,7 +29,6 @@ import {
   getReadingsInRange,
 } from '../utils/aggregations';
 import { formatDate, formatTime, getMostRecentSaturday, startOfDay } from '../utils/dateHelpers';
-import { addInsulinRecord, deleteReading } from '../utils/storage';
 import './Progress.css';
 
 const RANGE_MAP = {
@@ -46,10 +46,28 @@ const STATUS_COLORS = {
 };
 
 function Progress() {
-  const { readings, foodLog, goalsLog, insulinLog, refreshInsulinLog, refreshReadings, showToast } = useApp();
+  const navigate = useNavigate();
+  const {
+    readings,
+    foodLog,
+    goalsLog,
+    insulinLog,
+    medicineLogs,
+    waterLog,
+    weightLog,
+    showToast,
+    addInsulinRecord,
+    deleteReading,
+    addWeightLog,
+    deleteWeightLog,
+    settings,
+  } = useApp();
+  
   const [timeRange, setTimeRange] = useState('7');
   const [selectedReading, setSelectedReading] = useState(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [weightInput, setWeightInput] = useState('');
+  const [weightOpen, setWeightOpen] = useState(false);
   const days = RANGE_MAP[timeRange];
 
   const startDate = startOfDay(new Date(Date.now() - (days - 1) * 24 * 60 * 60 * 1000));
@@ -75,7 +93,6 @@ function Progress() {
       takenAt: new Date().toISOString(),
       notes: '',
     });
-    refreshInsulinLog();
     showToast('Insulin logged 💉');
   };
 
@@ -84,8 +101,31 @@ function Progress() {
     deleteReading(selectedReading.id);
     setConfirmDeleteOpen(false);
     setSelectedReading(null);
-    refreshReadings();
     showToast('Reading deleted');
+  };
+
+  const sortedWeightLog = useMemo(() => {
+    return [...weightLog]
+      .filter((entry) => new Date(entry.loggedAt) >= startDate)
+      .sort((a, b) => new Date(a.loggedAt) - new Date(b.loggedAt))
+      .map((entry) => ({
+        date: new Date(entry.loggedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        weight: entry.weight,
+        bmi: entry.bmi,
+        id: entry.id
+      }));
+  }, [weightLog, startDate]);
+
+  const handleSaveWeight = async () => {
+    const val = Number(weightInput);
+    if (!val || val <= 0 || val > 300) {
+      showToast('Please enter a valid weight (kg)', 'error');
+      return;
+    }
+    await addWeightLog(val);
+    showToast('Weight logged successfully ✓');
+    setWeightInput('');
+    setWeightOpen(false);
   };
 
   const CustomLineTooltip = ({ active, payload, label }) => {
@@ -103,9 +143,44 @@ function Progress() {
 
   return (
     <div className="page progress">
-      <header className="page-header-simple">
-        <p className="section-eyebrow">Trends and history</p>
-        <h1>Progress</h1>
+      <header className="page-header-simple" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+        <div>
+          <p className="section-eyebrow">Trends and history</p>
+          <h1>Progress</h1>
+        </div>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button
+            className="inline-link"
+            style={{
+              fontSize: 'var(--text-sm)',
+              minHeight: '44px',
+              border: '1px solid var(--color-primary)',
+              padding: '0 16px',
+              borderRadius: 'var(--radius-full)',
+              background: 'var(--color-surface-alt)',
+              cursor: 'pointer'
+            }}
+            onClick={() => setWeightOpen(true)}
+          >
+            ⚖️ Log Weight
+          </button>
+          <button
+            className="inline-link"
+            style={{
+              fontSize: 'var(--text-sm)',
+              minHeight: '44px',
+              border: '1px solid #0284C7',
+              padding: '0 16px',
+              borderRadius: 'var(--radius-full)',
+              background: 'rgba(14, 165, 233, 0.05)',
+              color: '#0284C7',
+              cursor: 'pointer'
+            }}
+            onClick={() => navigate('/report')}
+          >
+            📋 Clinical Report
+          </button>
+        </div>
       </header>
 
       <div className="time-range-selector">
@@ -135,6 +210,19 @@ function Progress() {
           <span className="stat-label">Average Post-Meal</span>
           <span className="stat-value">{avgPostMeal || '—'}</span>
           {avgPostMeal && <span className="stat-unit">mg/dL</span>}
+        </div>
+        <div className="stat-card">
+          <span className="stat-label">Current Weight</span>
+          <span className="stat-value">
+            {weightLog.length > 0
+              ? [...weightLog].sort((a, b) => new Date(b.loggedAt) - new Date(a.loggedAt))[0].weight
+              : (settings?.weight || '—')}
+          </span>
+          <span className="stat-unit">
+            kg {weightLog.length > 0
+              ? `(BMI: ${[...weightLog].sort((a, b) => new Date(b.loggedAt) - new Date(a.loggedAt))[0].bmi})`
+              : ''}
+          </span>
         </div>
         <div className="stat-card">
           <span className="stat-label">Readings Logged</span>
@@ -204,6 +292,52 @@ function Progress() {
         </ResponsiveContainer>
       </div>
 
+      <div className="card chart-card">
+        <div className="chart-heading">
+          <h2>Weight & BMI History</h2>
+          <p>Track body weight and calculated BMI values over this period.</p>
+        </div>
+        {sortedWeightLog.length === 0 ? (
+          <p className="empty-message" style={{ padding: '30px 0' }}>No weight data logged for this period yet.</p>
+        ) : (
+          <>
+            <ResponsiveContainer width="100%" height={220}>
+              <LineChart data={sortedWeightLog} margin={{ top: 8, right: 8, left: -20, bottom: 8 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(92,92,92,0.12)" />
+                <XAxis dataKey="date" tickLine={false} axisLine={false} />
+                <YAxis yAxisId="left" tickLine={false} axisLine={false} width={36} domain={['dataMin - 5', 'dataMax + 5']} />
+                <YAxis yAxisId="right" orientation="right" tickLine={false} axisLine={false} width={36} domain={['dataMin - 2', 'dataMax + 2']} />
+                <Tooltip />
+                <Legend />
+                <Line yAxisId="left" type="monotone" dataKey="weight" name="Weight (kg)" stroke="var(--color-primary)" strokeWidth={3} dot={{ r: 3 }} />
+                <Line yAxisId="right" type="monotone" dataKey="bmi" name="BMI" stroke="var(--color-accent)" strokeWidth={2} dot={{ r: 2 }} strokeDasharray="3 3" />
+              </LineChart>
+            </ResponsiveContainer>
+
+            <div className="recent-weight-list" style={{ marginTop: '16px', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              {[...sortedWeightLog].reverse().slice(0, 5).map((log) => (
+                <div key={log.id} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--color-surface-alt)', padding: '6px 12px', borderRadius: 'var(--radius-full)', fontSize: 'var(--text-xs)' }}>
+                  <strong>{log.weight} kg</strong>
+                  <span style={{ color: 'var(--color-text-muted)' }}>{log.date}</span>
+                  <button 
+                    onClick={() => {
+                      if (window.confirm(`Delete weight log of ${log.weight} kg on ${log.date}?`)) {
+                        deleteWeightLog(log.id);
+                        showToast('Weight log deleted');
+                      }
+                    }} 
+                    style={{ border: 'none', background: 'none', color: 'var(--color-high)', cursor: 'pointer', padding: '0 4px', fontSize: '14px', fontWeight: 'bold' }}
+                    title="Delete"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
       <div className="card">
         <div className="chart-heading">
           <h2>Food Log Summary</h2>
@@ -223,6 +357,39 @@ function Progress() {
             ))}
           {!foodLog.length && (
             <p className="empty-message">Nothing logged yet today. Tap a meal to add what you had.</p>
+          )}
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="chart-heading">
+          <h2>Medication Intake History</h2>
+          <p>Recent medication logs to track patterns and assess condition.</p>
+        </div>
+        <div className="history-list">
+          {medicineLogs
+            .slice()
+            .sort((a, b) => new Date(b.consumedAt) - new Date(a.consumedAt))
+            .slice(0, 12)
+            .map((log) => (
+              <div key={log.id} className="history-row" style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid var(--color-surface-alt)' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', textAlign: 'left' }}>
+                  <strong style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: 'var(--text-sm)', color: 'var(--color-text-primary)' }}>
+                    <Pill size={14} style={{ color: 'var(--color-primary)' }} />
+                    {log.medicineName}
+                  </strong>
+                  {log.notes && <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', fontStyle: 'italic' }}>{log.notes}</span>}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
+                  <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--color-text-primary)' }}>{log.dosage || '1 unit'}</span>
+                  <small style={{ color: 'var(--color-text-muted)', fontSize: '10px' }}>
+                    {formatDate(log.consumedAt)} • {formatTime(log.consumedAt)}
+                  </small>
+                </div>
+              </div>
+            ))}
+          {!medicineLogs.length && (
+            <p className="empty-message">No medication intake logged yet.</p>
           )}
         </div>
       </div>
@@ -311,6 +478,32 @@ function Progress() {
           </>
         )}
       </BottomSheet>
+
+      <BottomSheet
+        open={weightOpen}
+        onClose={() => setWeightOpen(false)}
+        title="Log Body Weight / वजन नोंदवा ⚖️"
+      >
+        <div className="form-group" style={{ textCombineUpright: 'left', display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+          <label className="form-label" style={{ fontWeight: 700, fontSize: 'var(--text-sm)' }}>Body Weight / वजन (kg)</label>
+          <input
+            type="number"
+            className="form-input"
+            value={weightInput}
+            onChange={(e) => setWeightInput(e.target.value)}
+            placeholder="e.g. 60"
+            min="10"
+            max="300"
+            style={{ width: '100%', minHeight: '52px', border: 'none', background: 'var(--color-surface-alt)', padding: '0 16px', borderRadius: '8px', fontSize: '16px', color: 'var(--color-text-primary)' }}
+            required
+            autoFocus
+          />
+        </div>
+        <button className="btn-primary" style={{ minHeight: '54px', width: '100%' }} onClick={handleSaveWeight}>
+          Save Weight Log
+        </button>
+      </BottomSheet>
+
       <ConfirmSheet
         open={confirmDeleteOpen}
         onClose={() => setConfirmDeleteOpen(false)}

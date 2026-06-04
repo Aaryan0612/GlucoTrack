@@ -1,12 +1,14 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Apple, Home, PlusCircle, Target, TrendingUp } from 'lucide-react';
+import { useApp } from '../../context/AppContext';
 import './BottomNav.css';
 
 function BottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, settings } = useApp();
 
-  if (location.pathname === '/onboarding') return null;
+  if (!user || location.pathname === '/login' || location.pathname === '/onboarding' || (settings && !settings.onboardingComplete)) return null;
 
   const isActive = (path) => location.pathname === path;
 

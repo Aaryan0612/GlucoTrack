@@ -347,3 +347,59 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Dark mode contrast overrides */
+[data-theme="dark"] .log-reading::before {
+  background:
+    radial-gradient(circle at top left, rgba(82, 183, 136, 0.18), transparent 52%),
+    linear-gradient(180deg, rgba(18, 18, 17, 0.9), rgba(18, 18, 17, 0));
+}
+
+[data-theme="dark"] .btn-back {
+  background: var(--color-surface-alt);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .header-kicker {
+  background: rgba(82, 183, 136, 0.18);
+  color: var(--color-primary-light);
+}
+
+[data-theme="dark"] .log-panel {
+  background: var(--color-surface);
+  border-color: rgba(82, 183, 136, 0.12);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .log-panel-highlight {
+  background: linear-gradient(180deg, rgba(26, 61, 43, 0.25), var(--color-surface));
+}
+
+[data-theme="dark"] .field-chip {
+  background: var(--color-surface-alt);
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .meal-btn {
+  background: var(--color-surface-alt);
+  color: var(--color-text-primary);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .meal-btn.active {
+  background: linear-gradient(135deg, #52b788 0%, #2d6a4f 100%);
+  color: var(--color-text-on-dark);
+}
+
+[data-theme="dark"] .value-input-wrapper {
+  background: var(--color-surface-alt);
+  border-color: var(--color-primary-light);
+}
+
+[data-theme="dark"] .notes-input {
+  background: var(--color-surface-alt);
+  color: var(--color-text-primary);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+

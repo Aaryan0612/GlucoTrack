@@ -1,0 +1,555 @@
+.report-page {
+  width: min(100%, 820px);
+  margin: 0 auto;
+  padding: calc(var(--space-4) + env(safe-area-inset-top)) var(--space-4) calc(100px + env(safe-area-inset-bottom));
+}
+
+.report-action-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid rgba(45, 106, 79, 0.1);
+  padding: var(--space-4);
+  border-radius: 20px;
+  margin-bottom: var(--space-5);
+  box-shadow: var(--shadow-card);
+}
+
+.report-header-title {
+  flex: 1;
+}
+
+.report-header-title h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.report-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.range-picker {
+  display: inline-flex;
+  background: var(--color-surface-alt);
+  padding: 4px;
+  border-radius: var(--radius-full);
+}
+
+.range-picker button {
+  border: none;
+  background: none;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--text-xs);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.range-picker button.active {
+  background: var(--color-primary);
+  color: var(--color-text-on-dark);
+}
+
+.btn-print {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #38BDF8 0%, #0284C7 100%);
+  color: white;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 10px 18px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
+  transition: all 0.2s ease;
+}
+
+.btn-print:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(14, 165, 233, 0.3);
+}
+
+.btn-print:active {
+  transform: translateY(0);
+}
+
+/* printable container screen styles */
+.clinical-report-container {
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 24px;
+  padding: var(--space-6);
+  color: #111111; /* Always dark text on report for standard clinical reading */
+  box-shadow: var(--shadow-card);
+}
+
+[data-theme="dark"] .clinical-report-container {
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.clinical-report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.clinic-logo-section {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.logo-symbol {
+  font-size: 32px;
+}
+
+.app-title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: #2D6A4F;
+}
+
+.report-meta-box {
+  text-align: right;
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: #333333;
+}
+
+.report-meta-box strong {
+  color: #111111;
+}
+
+.divider {
+  border: none;
+  border-bottom: 2px solid #E5E7EB;
+  margin: var(--space-5) 0;
+}
+
+.section-block {
+  margin-bottom: var(--space-6);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: #2D6A4F;
+  margin-bottom: var(--space-4);
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #E5E7EB;
+  padding-bottom: 6px;
+}
+
+.inline-icon {
+  margin-right: 8px;
+  color: #2D6A4F;
+}
+
+/* Patient profile details grid */
+.patient-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: var(--space-4);
+}
+
+.profile-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  padding: 12px 14px;
+  border-radius: 12px;
+}
+
+.profile-cell span {
+  font-size: 11px;
+  color: #6B7280;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.profile-cell strong {
+  font-size: 15px;
+  color: #111111;
+}
+
+/* Clinical summary card statistics */
+.clinical-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-4);
+}
+
+.clinical-stat-card {
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.clinical-stat-card.highlight {
+  background: #ECFDF5;
+  border-color: #A7F3D0;
+}
+
+.card-lbl {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4B5563;
+}
+
+.card-val {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: #111111;
+  font-family: var(--font-display);
+}
+
+.color-brand {
+  color: #059669 !important;
+}
+
+.card-desc {
+  font-size: 11px;
+  color: #6B7280;
+}
+
+.range-indicator-bar {
+  width: 100%;
+  height: 6px;
+  background: #E5E7EB;
+  border-radius: var(--radius-full);
+  margin-top: 4px;
+  overflow: hidden;
+}
+
+.range-indicator-bar .fill {
+  height: 100%;
+  background: #10B981;
+  border-radius: var(--radius-full);
+}
+
+/* Timings Delay Auditing */
+.timings-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .timings-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.timing-audit-card {
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  padding: var(--space-4);
+}
+
+.timing-audit-card h4 {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: #111111;
+  margin-bottom: var(--space-3);
+  border-bottom: 1px dashed #E5E7EB;
+  padding-bottom: 6px;
+}
+
+.audit-table {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.audit-header,
+.audit-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1.5fr 1fr 1.3fr;
+  font-size: var(--text-xs);
+  align-items: center;
+}
+
+.audit-header {
+  font-weight: 700;
+  color: #4B5563;
+  border-bottom: 1px solid #E5E7EB;
+  padding-bottom: 4px;
+}
+
+.audit-row {
+  padding: 4px 0;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.badge-ok,
+.badge-warn,
+.tbl-badge {
+  display: inline-flex;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-weight: 700;
+  width: fit-content;
+}
+
+.badge-ok {
+  background: #EAFDF3;
+  color: #10B981;
+}
+
+.badge-warn {
+  background: #FFFBEB;
+  color: #D97706;
+}
+
+.text-warn {
+  color: #D97706;
+  font-weight: 700;
+}
+
+.compliance-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.compliance-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+}
+
+.compliance-item .num-val {
+  font-size: 18px;
+  font-weight: 800;
+  color: #111111;
+}
+
+.compliance-item .num-val.water-color {
+  color: #0EA5E9;
+}
+
+.compliance-item .lbl-val {
+  font-size: 10px;
+  color: #6B7280;
+  font-weight: 600;
+}
+
+.note-text {
+  font-size: 10px;
+  color: #6B7280;
+  font-style: italic;
+}
+
+.mt-2 { margin-top: 8px; }
+.mt-4 { margin-top: 16px; }
+.mt-6 { margin-top: 24px; }
+
+/* Visual charts in report */
+.report-charts-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .report-charts-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.report-chart-box {
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  padding: var(--space-4);
+}
+
+.report-chart-box h4 {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  margin-bottom: var(--space-3);
+  color: #111111;
+}
+
+.chart-wrapper {
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 8px;
+}
+
+.empty-message-small {
+  text-align: center;
+  color: #9CA3AF;
+  font-size: var(--text-xs);
+  padding: 40px 0;
+}
+
+/* Logs data tables */
+.report-table-wrapper h4 {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: #111111;
+  margin-bottom: var(--space-2);
+}
+
+.clinical-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-xs);
+  text-align: left;
+}
+
+.clinical-data-table th,
+.clinical-data-table td {
+  padding: 10px 12px;
+  border: 1px solid #E5E7EB;
+}
+
+.clinical-data-table th {
+  background: #F3F4F6;
+  font-weight: 700;
+  color: #374151;
+}
+
+.clinical-data-table td {
+  color: #111111;
+}
+
+.note-col {
+  color: #4B5563 !important;
+  font-size: 11px;
+}
+
+.badge-normal { background: #ECFDF5; color: #10B981; }
+.badge-caution { background: #FFFBEB; color: #D97706; }
+.badge-high { background: #FEF2F2; color: #EF4444; }
+.badge-low { background: #EFF6FF; color: #3B82F6; }
+
+/* Signature lines for doctor */
+.clinical-report-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-8);
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.signature-line {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.signature-line p {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: #4B5563;
+}
+
+.sig-space {
+  height: 60px;
+  border-bottom: 1px solid #9CA3AF;
+}
+
+/* Print CSS Configurations */
+@media print {
+  /* Hide standard PWA navigations and action bars */
+  body, html, #root {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    font-size: 12px !important;
+  }
+  
+  .no-print,
+  .bottom-nav,
+  .toast,
+  .install-banner,
+  .opening-quote,
+  .report-action-header {
+    display: none !important;
+  }
+
+  .report-page {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .clinical-report-container {
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+
+  /* Force page breaks neatly on print standard sheets */
+  .page-break-before {
+    page-break-before: always !important;
+    margin-top: 20px;
+  }
+
+  .section-block {
+    page-break-inside: avoid !important;
+  }
+
+  .report-table-wrapper {
+    page-break-inside: avoid !important;
+  }
+
+  .clinical-data-table th {
+    background-color: #F3F4F6 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .clinical-stat-card.highlight {
+    background: #ECFDF5 !important;
+    border-color: #A7F3D0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .badge-normal { background: #ECFDF5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .badge-caution { background: #FFFBEB !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .badge-high { background: #FEF2F2 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .badge-low { background: #EFF6FF !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .badge-ok { background: #EAFDF3 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .badge-warn { background: #FFFBEB !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

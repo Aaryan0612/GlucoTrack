@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, CalendarDays, Clock3, PencilLine } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { addReading, checkDuplicateReading, updateSettings } from '../utils/storage';
+import { checkDuplicateReading } from '../utils/storage';
 import {
   combineDateAndTime,
   formatDate,
@@ -18,7 +18,7 @@ import './LogReading.css';
 
 function LogReading() {
   const navigate = useNavigate();
-  const { readings, settings, refreshReadings, refreshSettings, showToast } = useApp();
+  const { readings, settings, showToast, addReading, updateSettings } = useApp();
   const roundedNow = roundToNearest5Minutes();
   const [value, setValue] = useState('');
   const [mealType, setMealType] = useState(getDefaultMealType());
@@ -56,14 +56,12 @@ function LogReading() {
       notes: notes.trim(),
     });
 
-    refreshReadings();
     showToast(isPastDate ? `Reading saved for ${formatDate(loggedAt)} ✓` : 'Reading saved! ✓');
     navigate('/');
   };
 
   const handleDismissHint = () => {
     updateSettings({ pastReadingsHintDismissed: true });
-    refreshSettings();
     setDismissedHint(true);
   };
 

@@ -230,3 +230,14 @@
     text-align: left;
   }
 }
+
+/* Dark mode and stats grid overrides */
+.stats-grid {
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)) !important;
+}
+
+[data-theme="dark"] .chart-tooltip {
+  background: rgba(30, 30, 27, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+

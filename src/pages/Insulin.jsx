@@ -1,12 +1,11 @@
 import { useApp } from '../context/AppContext';
-import { addInsulinRecord } from '../utils/storage';
 import { getMostRecentSaturday, isTodaySaturday, wasInsulinTakenThisSaturday, formatDate } from '../utils/dateHelpers';
 import { getInsulinStreak } from '../utils/aggregations';
 import { Syringe } from 'lucide-react';
 import './Insulin.css';
 
 function Insulin() {
-  const { insulinLog, refreshInsulinLog, showToast } = useApp();
+  const { insulinLog, addInsulinRecord, showToast } = useApp();
   
   const thisSaturday = getMostRecentSaturday();
   const isSaturday = isTodaySaturday();
@@ -21,7 +20,6 @@ function Insulin() {
       notes: ''
     });
     
-    refreshInsulinLog();
     showToast('Insulin logged for today 💉✓', 'success');
   };
 

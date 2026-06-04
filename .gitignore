@@ -27,3 +27,6 @@ dist-ssr
 .kiro/
 Plan/
 SETUP.md
+
+# Firebase cache
+.firebase
