@@ -62,9 +62,18 @@ export function AppProvider({ children }) {
     return () => unsubscribeAuth();
   }, []);
 
+  const dbUid = useMemo(() => {
+    if (!user) return null;
+    const ALLOWED_EMAILS = ['aaryankuchekar06@gmail.com', 'kuchekarnandini3@gmail.com'];
+    if (user.email && ALLOWED_EMAILS.includes(user.email.toLowerCase())) {
+      return 'shared_mom_tracker';
+    }
+    return user.uid;
+  }, [user]);
+
   // Handle Firestore subscriptions scoped by user UID
   useEffect(() => {
-    if (!user) {
+    if (!dbUid) {
       // Clear data states if logged out
       setReadings([]);
       setFoodLog([]);
@@ -81,7 +90,7 @@ export function AppProvider({ children }) {
       return undefined;
     }
 
-    const uid = user.uid;
+    const uid = dbUid;
 
     // Subscriptions setup
     const unsubReadings = onSnapshot(collection(db, 'users', uid, 'readings'), (snap) => {
@@ -229,7 +238,7 @@ export function AppProvider({ children }) {
       unsubTargets();
       unsubPlans();
     };
-  }, [user]);
+  }, [dbUid]);
 
   // Auth Operations
   const signInWithGoogle = async () => {
@@ -264,45 +273,45 @@ export function AppProvider({ children }) {
   };
 
   // Facaded async CRUD calls
-  const addReading = (reading) => dbAddReading(user?.uid, reading);
-  const deleteReading = (id) => dbDeleteReading(user?.uid, id);
-  const updateReading = (id, updates) => dbUpdateReading(user?.uid, id, updates);
+  const addReading = (reading) => dbAddReading(dbUid, reading);
+  const deleteReading = (id) => dbDeleteReading(dbUid, id);
+  const updateReading = (id, updates) => dbUpdateReading(dbUid, id, updates);
 
-  const saveMealEntry = (entry) => dbSaveMealEntry(user?.uid, entry);
-  const deleteMealEntry = (id) => dbDeleteMealEntry(user?.uid, id);
+  const saveMealEntry = (entry) => dbSaveMealEntry(dbUid, entry);
+  const deleteMealEntry = (id) => dbDeleteMealEntry(dbUid, id);
 
   const toggleGoal = (date, goalKey) => {
     const goalsRecord = goalsLog.find((record) => record.date === date);
-    return dbToggleGoal(user?.uid, date, goalKey, goalsRecord);
+    return dbToggleGoal(dbUid, date, goalKey, goalsRecord);
   };
 
   const saveGoalsForDate = (date, updates) => {
     const goalsRecord = goalsLog.find((record) => record.date === date);
-    return dbSaveGoalsForDate(user?.uid, date, updates, goalsRecord);
+    return dbSaveGoalsForDate(dbUid, date, updates, goalsRecord);
   };
 
-  const updateGoalTarget = (goalKey, targetMins) => dbUpdateGoalTarget(user?.uid, goalKey, targetMins);
-  const updateCarePlan = (section, key, value) => dbUpdateCarePlan(user?.uid, section, key, value);
+  const updateGoalTarget = (goalKey, targetMins) => dbUpdateGoalTarget(dbUid, goalKey, targetMins);
+  const updateCarePlan = (section, key, value) => dbUpdateCarePlan(dbUid, section, key, value);
 
-  const addInsulinRecord = (record) => dbAddInsulinRecord(user?.uid, record);
-  const updateSettings = (partialSettings) => dbUpdateSettings(user?.uid, partialSettings);
+  const addInsulinRecord = (record) => dbAddInsulinRecord(dbUid, record);
+  const updateSettings = (partialSettings) => dbUpdateSettings(dbUid, partialSettings);
 
-  const addReminder = (reminder) => dbAddReminder(user?.uid, reminder);
-  const updateReminder = (id, updates) => dbUpdateReminder(user?.uid, id, updates);
-  const deleteReminder = (id) => dbDeleteReminder(user?.uid, id);
+  const addReminder = (reminder) => dbAddReminder(dbUid, reminder);
+  const updateReminder = (id, updates) => dbUpdateReminder(dbUid, id, updates);
+  const deleteReminder = (id) => dbDeleteReminder(dbUid, id);
 
-  const addMedicine = (medicine) => dbAddMedicine(user?.uid, medicine);
-  const updateMedicine = (id, updates) => dbUpdateMedicine(user?.uid, id, updates);
-  const deleteMedicine = (id) => dbDeleteMedicine(user?.uid, id);
+  const addMedicine = (medicine) => dbAddMedicine(dbUid, medicine);
+  const updateMedicine = (id, updates) => dbUpdateMedicine(dbUid, id, updates);
+  const deleteMedicine = (id) => dbDeleteMedicine(dbUid, id);
 
-  const addMedicineLog = (logEntry) => dbAddMedicineLog(user?.uid, logEntry);
-  const deleteMedicineLog = (id) => dbDeleteMedicineLog(user?.uid, id);
+  const addMedicineLog = (logEntry) => dbAddMedicineLog(dbUid, logEntry);
+  const deleteMedicineLog = (id) => dbDeleteMedicineLog(dbUid, id);
 
-  const addWaterLog = (amountMl, dateStr) => dbAddWaterLog(user?.uid, amountMl, dateStr);
-  const deleteWaterLog = (id) => dbDeleteWaterLog(user?.uid, id);
+  const addWaterLog = (amountMl, dateStr) => dbAddWaterLog(dbUid, amountMl, dateStr);
+  const deleteWaterLog = (id) => dbDeleteWaterLog(dbUid, id);
 
-  const addWeightLog = (weightKg) => dbAddWeightLog(user?.uid, weightKg, settings?.height || 155);
-  const deleteWeightLog = (id) => dbDeleteWeightLog(user?.uid, id);
+  const addWeightLog = (weightKg) => dbAddWeightLog(dbUid, weightKg, settings?.height || 155);
+  const deleteWeightLog = (id) => dbDeleteWeightLog(dbUid, id);
 
   const value = useMemo(
     () => ({
