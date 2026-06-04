@@ -28,6 +28,21 @@ import { playSongMelody, playMeditationOm, stopAllAudio } from '../utils/audioEn
 import { saveLocalSong, getLocalSongUrl, hasLocalSong, deleteLocalSong } from '../utils/audioStorage';
 import './Dashboard.css';
 
+const renderFoodRelationBadge = (relation) => {
+  if (!relation || relation === 'none') return null;
+  const config = {
+    before: { text: 'Before Meal / जेवणापूर्वी 🍽️', className: 'relation-before' },
+    with: { text: 'With Meal / जेवणासोबत 🍲', className: 'relation-with' },
+    after: { text: 'After Meal / जेवणानंतर 🥄', className: 'relation-after' },
+  }[relation];
+  if (!config) return null;
+  return (
+    <span className={`food-relation-badge ${config.className}`}>
+      {config.text}
+    </span>
+  );
+};
+
 const FOOD_MEALS = [
   { key: 'breakfast', label: 'Breakfast', icon: '🍳' },
   { key: 'lunch', label: 'Lunch', icon: '🥗' },
@@ -393,6 +408,7 @@ function Dashboard() {
         name: med.name,
         dosage: med.dosage,
         time: med.time,
+        foodRelation: med.foodRelation,
         taken: !!log,
         takenAt: log ? log.consumedAt : null,
         notes: log ? log.notes : '',
@@ -636,6 +652,7 @@ function Dashboard() {
                     {item.type === 'medicine' ? (
                       <>
                         <span className="timeline-sub">Dosage: {item.dosage || '1 unit'}</span>
+                        {renderFoodRelationBadge(item.foodRelation)}
                         {item.taken ? (
                           <span className="timeline-sub taken">
                             Taken at {formatTime(item.takenAt)}

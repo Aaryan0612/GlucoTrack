@@ -121,6 +121,7 @@ export function AppProvider({ children }) {
             name: 'Tab Gliclazide + Metformin (60/500)',
             dosage: '60/500 mg (1 tablet)',
             time: '08:30',
+            foodRelation: 'with',
             notes: 'Morning dose (1-0-1), take with breakfast. PO (By mouth)',
             active: true
           },
@@ -128,6 +129,7 @@ export function AppProvider({ children }) {
             name: 'Tab Gliclazide + Metformin (60/500)',
             dosage: '60/500 mg (1 tablet)',
             time: '20:30',
+            foodRelation: 'with',
             notes: 'Night dose (1-0-1), take with dinner. PO (By mouth)',
             active: true
           },
@@ -135,6 +137,7 @@ export function AppProvider({ children }) {
             name: 'Tab Voglibose',
             dosage: '0.2 mg (1 tablet)',
             time: '08:30',
+            foodRelation: 'before',
             notes: 'Morning dose (1-0-1), take before breakfast. PO (By mouth)',
             active: true
           },
@@ -142,6 +145,7 @@ export function AppProvider({ children }) {
             name: 'Tab Voglibose',
             dosage: '0.2 mg (1 tablet)',
             time: '20:30',
+            foodRelation: 'before',
             notes: 'Night dose (1-0-1), take before dinner. PO (By mouth)',
             active: true
           },
@@ -149,6 +153,7 @@ export function AppProvider({ children }) {
             name: 'Tab Linagliptin + Dapa (5/10)',
             dosage: '5/10 mg (1 tablet)',
             time: '13:30',
+            foodRelation: 'with',
             notes: 'Afternoon dose (0-1-0), take with lunch. PO (By mouth)',
             active: true
           },
@@ -156,6 +161,7 @@ export function AppProvider({ children }) {
             name: 'Inj Lantus (Insulin)',
             dosage: '8 units',
             time: '22:00',
+            foodRelation: 'none',
             notes: 'Bedtime dose (0-0-8-0) at 10 PM. S/C (Subcutaneous)',
             active: true
           },
@@ -163,6 +169,7 @@ export function AppProvider({ children }) {
             name: 'Tab Linezolid',
             dosage: '600 mg (1 tablet)',
             time: '08:30',
+            foodRelation: 'none',
             notes: 'Morning dose (1-0-1) for 5 days. PO (By mouth)',
             active: true
           },
@@ -170,6 +177,7 @@ export function AppProvider({ children }) {
             name: 'Tab Linezolid',
             dosage: '600 mg (1 tablet)',
             time: '20:30',
+            foodRelation: 'none',
             notes: 'Night dose (1-0-1) for 5 days. PO (By mouth)',
             active: true
           }

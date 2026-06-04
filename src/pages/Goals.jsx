@@ -19,6 +19,21 @@ import { addDays, getMonthGrid, isSameMonth, toDateKey, formatTimeStr } from '..
 import ProfileTab from './ProfileTab';
 import './Goals.css';
 
+const renderFoodRelationBadge = (relation) => {
+  if (!relation || relation === 'none') return null;
+  const config = {
+    before: { text: 'Before Meal / जेवणापूर्वी 🍽️', className: 'relation-before' },
+    with: { text: 'With Meal / जेवणासोबत 🍲', className: 'relation-with' },
+    after: { text: 'After Meal / जेवणानंतर 🥄', className: 'relation-after' },
+  }[relation];
+  if (!config) return null;
+  return (
+    <span className={`food-relation-badge ${config.className}`}>
+      {config.text}
+    </span>
+  );
+};
+
 const GOAL_META = {
   walk: {
     emoji: '🚶',
@@ -102,6 +117,7 @@ function Goals() {
   const [medName, setMedName] = useState('');
   const [medDose, setMedDose] = useState('');
   const [medTime, setMedTime] = useState('08:00');
+  const [foodRelation, setFoodRelation] = useState('none');
   const [medNotes, setMedNotes] = useState('');
 
   // Custom Reminder States
@@ -215,6 +231,7 @@ function Goals() {
     setMedName('');
     setMedDose('');
     setMedTime('08:00');
+    setFoodRelation('none');
     setMedNotes('');
     setMedSheetOpen(true);
   };
@@ -224,6 +241,7 @@ function Goals() {
     setMedName(med.name);
     setMedDose(med.dosage || '');
     setMedTime(med.time || '08:00');
+    setFoodRelation(med.foodRelation || 'none');
     setMedNotes(med.notes || '');
     setMedSheetOpen(true);
   };
@@ -237,6 +255,7 @@ function Goals() {
       name: medName.trim(),
       dosage: medDose.trim(),
       time: medTime,
+      foodRelation,
       notes: medNotes.trim(),
       active: selectedMed ? selectedMed.active : true
     };
@@ -544,7 +563,8 @@ function Goals() {
                     </div>
                     <span className="med-meta">Dosage: {med.dosage || '—'}</span>
                     <span className="med-meta">Consume at: {formatTimeStr(med.time)}</span>
-                    {med.notes && <p className="med-notes">Note: {med.notes}</p>}
+                    {renderFoodRelationBadge(med.foodRelation)}
+                    {med.notes && <p className="med-notes" style={{ marginTop: '4px' }}>Note: {med.notes}</p>}
                   </div>
                   <button className="inline-link" onClick={() => handleOpenEditMed(med)}>
                     <FilePenLine size={16} /> Edit
@@ -740,6 +760,30 @@ function Goals() {
             value={medTime}
             onChange={(e) => setMedTime(e.target.value)}
           />
+        </div>
+
+        <div className="form-group">
+          <label>Relation to Meals / जेवणाची वेळ</label>
+          <select 
+            className="form-input" 
+            value={foodRelation} 
+            onChange={(e) => setFoodRelation(e.target.value)}
+            style={{ 
+              appearance: 'none', 
+              background: 'var(--color-surface)', 
+              border: '1px solid var(--color-surface-alt)', 
+              borderRadius: '12px', 
+              padding: '12px 14px', 
+              color: 'var(--color-text-primary)',
+              fontFamily: 'inherit',
+              fontSize: '15px'
+            }}
+          >
+            <option value="none">No relation / जेवणाशी संबंध नाही</option>
+            <option value="before">Before Meal / जेवणापूर्वी 🍽️</option>
+            <option value="with">With Meal / जेवणासोबत 🍲</option>
+            <option value="after">After Meal / जेवणानंतर 🥄</option>
+          </select>
         </div>
 
         <div className="form-group">

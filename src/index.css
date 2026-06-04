@@ -204,3 +204,51 @@ button {
 .btn-primary:active {
   transform: scale(0.98);
 }
+
+/* Food Relation Badges for Medication Timelines */
+.food-relation-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  width: fit-content;
+  margin-top: 4px;
+}
+
+.food-relation-badge.relation-before {
+  background-color: #FFF3E0;
+  color: #E65100;
+  border: 1px solid #FFB74D;
+}
+
+[data-theme="dark"] .food-relation-badge.relation-before {
+  background-color: rgba(230, 81, 0, 0.15);
+  color: #FFB74D;
+  border-color: rgba(230, 81, 0, 0.3);
+}
+
+.food-relation-badge.relation-with {
+  background-color: #E8F5E9;
+  color: #2E7D32;
+  border: 1px solid #81C784;
+}
+
+[data-theme="dark"] .food-relation-badge.relation-with {
+  background-color: rgba(46, 125, 50, 0.15);
+  color: #81C784;
+  border-color: rgba(46, 125, 50, 0.3);
+}
+
+.food-relation-badge.relation-after {
+  background-color: #E3F2FD;
+  color: #1565C0;
+  border: 1px solid #64B5F6;
+}
+
+[data-theme="dark"] .food-relation-badge.relation-after {
+  background-color: rgba(21, 101, 192, 0.15);
+  color: #64B5F6;
+  border-color: rgba(21, 101, 192, 0.3);
+}
