@@ -35,6 +35,29 @@ export default defineConfig({
             type: 'image/png',
             purpose: 'any maskable'
           }
+        ],
+        shortcuts: [
+          {
+            name: 'Log Glucose / साखर नोंदवा',
+            short_name: 'Sugar Log',
+            description: 'Quickly log a blood glucose reading',
+            url: '/log',
+            icons: [{ src: 'pwa-192x192.png', sizes: '192x192' }]
+          },
+          {
+            name: 'Clinical Report / आरोग्य अहवाल',
+            short_name: 'Report',
+            description: 'View diabetologist clinical report',
+            url: '/report',
+            icons: [{ src: 'pwa-192x192.png', sizes: '192x192' }]
+          },
+          {
+            name: 'Care Routine / औषधे व दिनचर्या',
+            short_name: 'Routine',
+            description: 'Check today\'s care plans and medicines',
+            url: '/goals',
+            icons: [{ src: 'pwa-192x192.png', sizes: '192x192' }]
+          }
         ]
       },
       workbox: {
