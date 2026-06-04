@@ -553,3 +553,96 @@
   .badge-ok { background: #EAFDF3 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .badge-warn { background: #FFFBEB !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* Responsive Table Wrapper for Screen View */
+.report-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: var(--space-4);
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+}
+
+.report-table-wrapper table {
+  margin-bottom: 0 !important;
+}
+
+/* Screen Mobile Responsive Styles */
+@media (max-width: 600px) {
+  .report-page {
+    padding: var(--space-3) var(--space-3) calc(100px + env(safe-area-inset-bottom));
+  }
+  
+  .report-action-header {
+    padding: var(--space-3);
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+  
+  .report-actions {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .clinical-report-container {
+    padding: var(--space-3);
+    border-radius: 16px;
+  }
+
+  .clinical-report-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .report-meta-box {
+    text-align: left;
+  }
+
+  /* Responsive Meal Timing Auditing Rows */
+  .audit-header {
+    display: none;
+  }
+
+  .audit-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding: 12px;
+    background: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    margin-bottom: 8px;
+  }
+
+  .audit-row > *:nth-child(1) {
+    grid-column: 1 / span 2;
+    font-size: var(--text-sm);
+    color: #2D6A4F;
+    border-bottom: 1px dashed #E5E7EB;
+    padding-bottom: 4px;
+    margin-bottom: 2px;
+    text-align: left !important;
+  }
+
+  .audit-row > *:nth-child(2) {
+    grid-column: 1;
+    text-align: left !important;
+    font-size: 11px;
+    color: #4B5563;
+  }
+
+  .audit-row > *:nth-child(3) {
+    grid-column: 2;
+    text-align: right !important;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .audit-row > *:nth-child(4) {
+    grid-column: 1 / span 2;
+    justify-self: start;
+    margin-top: 4px;
+  }
+}

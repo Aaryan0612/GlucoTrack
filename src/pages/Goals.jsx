@@ -15,7 +15,7 @@ import {
 import BottomSheet from '../components/shared/BottomSheet';
 import { useApp } from '../context/AppContext';
 import { getGoalStreak } from '../utils/aggregations';
-import { addDays, getMonthGrid, isSameMonth, toDateKey } from '../utils/dateHelpers';
+import { addDays, getMonthGrid, isSameMonth, toDateKey, formatTimeStr } from '../utils/dateHelpers';
 import ProfileTab from './ProfileTab';
 import './Goals.css';
 
@@ -543,7 +543,7 @@ function Goals() {
                       <strong>{med.name}</strong>
                     </div>
                     <span className="med-meta">Dosage: {med.dosage || '—'}</span>
-                    <span className="med-meta">Consume at: {med.time}</span>
+                    <span className="med-meta">Consume at: {formatTimeStr(med.time)}</span>
                     {med.notes && <p className="med-notes">Note: {med.notes}</p>}
                   </div>
                   <button className="inline-link" onClick={() => handleOpenEditMed(med)}>
@@ -613,7 +613,7 @@ function Goals() {
                       <strong style={{ opacity: rem.active ? 1 : 0.6 }}>{rem.title}</strong>
                     </div>
                     <span className="rem-meta" style={{ fontWeight: 600, fontSize: 'var(--text-base)' }}>
-                      {rem.time}
+                      {formatTimeStr(rem.time)}
                     </span>
                     <span className="rem-meta">
                       Repeats: {rem.days?.length === 0 ? 'Everyday' : rem.days?.join(', ')}

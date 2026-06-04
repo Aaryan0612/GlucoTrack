@@ -170,9 +170,8 @@ function Report() {
     
     filteredFoodLog.forEach(entry => {
       if (mealLogsByType[entry.mealType]) {
-        const timeStr = formatTime(entry.loggedAt); // e.g. "13:15"
-        const [hours, minutes] = timeStr.split(':').map(Number);
-        const mins = hours * 60 + minutes;
+        const date = new Date(entry.loggedAt);
+        const mins = date.getHours() * 60 + date.getMinutes();
         mealLogsByType[entry.mealType].push(mins);
       }
     });

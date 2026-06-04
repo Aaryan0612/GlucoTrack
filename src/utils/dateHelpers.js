@@ -49,11 +49,21 @@ export function formatCalendarLabel(dateInput) {
   }).format(date);
 }
 
+export function formatTimeStr(timeStr) {
+  if (!timeStr) return '';
+  const [hours, minutes] = timeStr.split(':').map(Number);
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const displayHours = hours % 12 || 12;
+  const displayMinutes = minutes.toString().padStart(2, '0');
+  return `${displayHours}:${displayMinutes} ${ampm}`;
+}
+
 export function formatTime(dateInput) {
   const date = new Date(dateInput);
   return new Intl.DateTimeFormat('en-US', {
     hour: 'numeric',
     minute: '2-digit',
+    hour12: true, // Force 12-hour format regardless of device settings
   }).format(date);
 }
 
